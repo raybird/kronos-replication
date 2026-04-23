@@ -2,7 +2,7 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0423.1532]: Implemented Causal Synergy & Structural Divergence.
+ * Spirit Inheritance [v26.0423.1544]: Implemented Causal Synergy & Structural Divergence.
  */
 export class KronosTokenizer {
   /**
@@ -91,4 +91,4 @@ export class KronosTokenizer {
   }
 }
 
-console.log("Kronos Replication Engine Evolved: Causal Synergy Mode [v26.0423.1532]");
+console.log("Kronos Replication Engine Evolved: Causal Synergy Mode [v26.0423.1544]");
