@@ -2,7 +2,7 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0424.0435]: Quantifying Volatility Compression & Structural Anchoring.
+ * Spirit Inheritance [v26.0424.0831]: Implemented Opening Imbalance & Causal Decay.
  */
 export class KronosTokenizer {
   /**
@@ -30,7 +30,7 @@ export class KronosTokenizer {
   }
 
   /**
-   * Identifies tokens with macro anchoring and compression awareness.
+   * Identifies tokens with opening energy and causal decay awareness.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     const tokens: FinancialToken[] = [];
@@ -41,8 +41,30 @@ export class KronosTokenizer {
     const previous = history[history.length - 2];
     const volAvg = history.slice(-20).reduce((a, b) => a + b.volume, 0) / 20;
     
-    // 1. VOLATILITY_COMPRESSION (The VCP Spirit)
+    // 1. OPENING_IMBALANCE (Opening Pulse DNA)
+    // High volume + High range relative to lookback
     const avgRange = history.slice(-10).reduce((sum, k) => sum + (k.high - k.low), 0) / 10;
+    if (current.volume > volAvg * 2.0 && (current.high - current.low) > avgRange * 1.5) {
+      tokens.push({
+        type: "OPENING_IMBALANCE_BULL",
+        confidence: 0.85,
+        causalDensity: 2.3
+      });
+    }
+
+    // 2. PRICING_POWER_BULL (With Decay Logic)
+    let ppMult = 1.0;
+    if (current.volume < previous.volume * 0.7) ppMult = 0.8; // Causal Decay: Price push on low volume
+
+    if (current.close > current.open && (current.close - current.low) / (current.high - current.low) > 0.8 && current.volume > volAvg * 1.5) {
+      tokens.push({
+        type: "PRICING_POWER_BULL",
+        confidence: 0.88,
+        causalDensity: 2.2 * ppMult
+      });
+    }
+
+    // 3. VOLATILITY_COMPRESSION (The VCP Spirit)
     if ((current.high - current.low) < avgRange * 0.5) {
       tokens.push({
         type: "VOLATILITY_COMPRESSION",
@@ -51,16 +73,7 @@ export class KronosTokenizer {
       });
     }
 
-    // 2. PRICING_POWER_BULL
-    if (current.close > current.open && (current.close - current.low) / (current.high - current.low) > 0.8 && current.volume > volAvg * 1.5) {
-      tokens.push({
-        type: "PRICING_POWER_BULL",
-        confidence: 0.88,
-        causalDensity: 2.2
-      });
-    }
-
-    // 3. INSTITUTIONAL_ABSORPTION
+    // 4. INSTITUTIONAL_ABSORPTION
     if (Math.abs(current.close - current.open) < (current.high - current.low) * 0.15 && current.volume > volAvg * 3.0) {
       tokens.push({
         type: "INSTITUTIONAL_ABSORPTION",
@@ -69,7 +82,7 @@ export class KronosTokenizer {
       });
     }
 
-    // 4. LIQUIDITY_SWEEP
+    // 5. LIQUIDITY_SWEEP
     if (current.low < previous.low && current.close > previous.close) {
       tokens.push({
         type: "LIQUIDITY_SWEEP_BULL",
@@ -78,21 +91,10 @@ export class KronosTokenizer {
       });
     }
 
-    // 5. IMBALANCE / FVG
-    const h3 = history[history.length - 3];
-    if (current.low > h3.high) {
-      tokens.push({
-        type: "FAIR_VALUE_GAP_UP",
-        confidence: 0.92,
-        causalDensity: 2.1
-      });
-    }
-
-    // Synergy & Macro Anchoring (Simulated weight for key levels)
-    const synergyBonus = tokens.length >= 2 ? 1.35 : 1.0;
+    // Synergy & Macro Anchoring
+    const synergyBonus = tokens.length >= 2 ? 1.4 : 1.0;
     tokens.forEach(t => {
       t.causalDensity *= synergyBonus;
-      // Macro Anchor: If in a Trending regime, amplify directionally aligned tokens
       if (regime === MarketRegime.BullishTrending && t.type.includes("BULL")) t.causalDensity *= 1.25;
       if (regime === MarketRegime.BearishTrending && t.type.includes("BEAR")) t.causalDensity *= 1.25;
     });
@@ -101,4 +103,4 @@ export class KronosTokenizer {
   }
 }
 
-console.log("Kronos Replication Engine Evolved: Volatility Compression Mode [v26.0424.0435]");
+console.log("Kronos Replication Engine Evolved: Opening Pulse Mode [v26.0424.0831]");
