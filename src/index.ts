@@ -1,8 +1,8 @@
-import { Kline, FinancialToken, MarketRegime } from "./types";
+import { FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0425.0432]: Structural Breaks & Displacement Auditing.
+ * Spirit Inheritance [v26.0425.0831]: Causal Re-testing & Intent Consistency.
  */
 export class KronosTokenizer {
   /**
@@ -30,7 +30,7 @@ export class KronosTokenizer {
   }
 
   /**
-   * Identifies tokens with structural and displacement awareness.
+   * Identifies tokens with structural and re-testing awareness.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     const tokens: FinancialToken[] = [];
@@ -42,80 +42,58 @@ export class KronosTokenizer {
     const volAvg = history.slice(-20).reduce((a, b) => a + b.volume, 0) / 20;
     const avgRange = history.slice(-10).reduce((sum, k) => sum + (k.high - k.low), 0) / 10;
     
-    // 1. STRUCTURAL_BREAK (BOS/CHoCH Spirit)
-    // Detecting if price has broken the highest high of the last 15 bars with volume
-    const recentHigh = history.slice(-15, -1).reduce((m, k) => Math.max(m, k.high), 0);
-    const recentLow  = history.slice(-15, -1).reduce((m, k) => Math.min(m, k.low), Infinity);
+    // 1. CAUSAL_RETEST (Intent Validation)
+    // Checking if price pulls back to a structural break level without high volume (healthy retest)
+    const recentHigh = history.slice(-15, -2).reduce((m, k) => Math.max(m, k.high), 0);
+    if (previous.high > recentHigh && current.low <= recentHigh && current.close > recentHigh && current.volume < volAvg) {
+      tokens.push({
+        type: "CAUSAL_RETEST_BULL",
+        confidence: 0.88,
+        causalDensity: 2.5
+      });
+    }
 
+    // 2. STRUCTURAL_BREAK (BOS/CHoCH)
     if (current.close > recentHigh && current.volume > volAvg * 1.2) {
       tokens.push({
         type: "STRUCTURAL_BREAK_BULL",
         confidence: 0.92,
         causalDensity: 2.8
       });
-    } else if (current.close < recentLow && current.volume > volAvg * 1.2) {
-      tokens.push({
-        type: "STRUCTURAL_BREAK_BEAR",
-        confidence: 0.92,
-        causalDensity: 2.8
-      });
     }
 
-    // 2. DISPLACEMENT_IMPULSE
-    // Rapid move leaving gaps and high volume (The 'Fair Value' shift)
+    // 3. DISPLACEMENT_IMPULSE
     if (Math.abs(current.close - current.open) > avgRange * 2.0 && current.volume > volAvg * 2.0) {
       tokens.push({
         type: "DISPLACEMENT_IMPULSE",
         confidence: 0.85,
-        causalDensity: 2.5
+        causalDensity: 2.6
       });
     }
 
-    // 3. CAUSAL_SURPRISE_REVERSAL (High Entropy)
+    // 4. CAUSAL_SURPRISE_REVERSAL
     const isAntiRegime = (regime === MarketRegime.BullishTrending && current.close < current.open) ||
                          (regime === MarketRegime.BearishTrending && current.close > current.open);
     if (isAntiRegime && current.volume > volAvg * 2.5) {
       tokens.push({
         type: "CAUSAL_SURPRISE_REVERSAL",
         confidence: 0.82,
-        causalDensity: 3.2
+        causalDensity: 3.3
       });
     }
 
-    // 4. INSTITUTIONAL_ABSORPTION
-    if (Math.abs(current.close - current.open) < (current.high - current.low) * 0.15 && current.volume > volAvg * 3.0) {
-      tokens.push({
-        type: "INSTITUTIONAL_ABSORPTION",
-        confidence: 0.90,
-        causalDensity: 2.7
-      });
-    }
-
-    // 5. PRICING_POWER_BULL (With Decay Penalty)
-    let ppMult = 1.0;
-    if (current.volume < previous.volume * 0.65) ppMult = 0.6; // Stricter Decay
-
-    if (current.close > current.open && (current.close - current.low) / (current.high - current.low) > 0.8 && current.volume > volAvg * 1.5) {
-      tokens.push({
-        type: "PRICING_POWER_BULL",
-        confidence: 0.88,
-        causalDensity: 2.3 * ppMult
-      });
-    }
-
-    // Bayesian & Structural Weighting
-    const synergyBonus = tokens.length >= 2 ? 1.55 : 1.0;
-    const regimePrior = (regime === MarketRegime.BullishTrending) ? 1.4 : 
-                        (regime === MarketRegime.HighVolatilityRange) ? 0.6 : 1.0;
+    // Bayesian & Consistency Weighting
+    const synergyBonus = tokens.length >= 2 ? 1.6 : 1.0;
+    const regimePrior = (regime === MarketRegime.BullishTrending) ? 1.45 : 
+                        (regime === MarketRegime.HighVolatilityRange) ? 0.55 : 1.0;
 
     tokens.forEach(t => {
       t.causalDensity *= (synergyBonus * regimePrior);
-      // Half-life metadata
-      (t as any).halfLife = t.type.includes("BREAK") ? 25 : t.type.includes("SURPRISE") ? 3 : 10;
+      (t as any).halfLife = t.type.includes("RETEST") ? 8 : t.type.includes("BREAK") ? 25 : 12;
     });
 
     return tokens;
   }
 }
 
-console.log("Kronos Replication Engine Evolved: Structural Auditing Mode [v26.0425.0432]");
+console.log("Kronos Replication Engine Evolved: Causal Re-testing Mode [v26.0425.0831]");
