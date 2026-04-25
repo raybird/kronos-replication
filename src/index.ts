@@ -1,8 +1,8 @@
-import { FinancialToken, MarketRegime } from "./types";
+import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0425.0831]: Causal Re-testing & Intent Consistency.
+ * Spirit Inheritance [v26.0425.1532]: Liquidity Polarization & Exhaustion Auditing.
  */
 export class KronosTokenizer {
   /**
@@ -30,31 +30,52 @@ export class KronosTokenizer {
   }
 
   /**
-   * Identifies tokens with structural and re-testing awareness.
+   * Identifies tokens with polarization and exhaustion awareness.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     const tokens: FinancialToken[] = [];
-    if (history.length < 15) return tokens;
+    if (history.length < 20) return tokens;
 
     const regime = this.identifyRegime(history);
     const current = history[history.length - 1];
-    const previous = history[history.length - 2];
     const volAvg = history.slice(-20).reduce((a, b) => a + b.volume, 0) / 20;
     const avgRange = history.slice(-10).reduce((sum, k) => sum + (k.high - k.low), 0) / 10;
     
-    // 1. CAUSAL_RETEST (Intent Validation)
-    // Checking if price pulls back to a structural break level without high volume (healthy retest)
-    const recentHigh = history.slice(-15, -2).reduce((m, k) => Math.max(m, k.high), 0);
-    if (previous.high > recentHigh && current.low <= recentHigh && current.close > recentHigh && current.volume < volAvg) {
+    // 1. LIQUIDITY_POLARIZATION (One-sided Aggression)
+    // High volume candle closing at extreme with very small wick opposite to trend
+    const bodySize = Math.abs(current.close - current.open);
+    const totalSize = current.high - current.low;
+    if (current.volume > volAvg * 1.8 && bodySize / totalSize > 0.85) {
+      const type = current.close > current.open ? "LIQUIDITY_POLARIZATION_BULL" : "LIQUIDITY_POLARIZATION_BEAR";
       tokens.push({
-        type: "CAUSAL_RETEST_BULL",
-        confidence: 0.88,
-        causalDensity: 2.5
+        type: type,
+        confidence: 0.90,
+        causalDensity: 2.9
       });
     }
 
-    // 2. STRUCTURAL_BREAK (BOS/CHoCH)
-    if (current.close > recentHigh && current.volume > volAvg * 1.2) {
+    // 2. EXHAUSTION_DIVERGENCE (Trend Fatigue)
+    // Price makes a 20-bar new high/low but volume is < 60% of previous impulsive peak
+    const recentHigh = history.slice(-20, -1).reduce((m, k) => Math.max(m, k.high), 0);
+    const recentLow  = history.slice(-20, -1).reduce((m, k) => Math.min(m, k.low), Infinity);
+    const prevImpulsiveVol = history.slice(-20, -1).reduce((m, k) => Math.max(m, k.volume), 0);
+
+    if (current.high > recentHigh && current.volume < prevImpulsiveVol * 0.6) {
+      tokens.push({
+        type: "EXHAUSTION_DIVERGENCE_BEAR",
+        confidence: 0.85,
+        causalDensity: 3.1
+      });
+    } else if (current.low < recentLow && current.volume < prevImpulsiveVol * 0.6) {
+      tokens.push({
+        type: "EXHAUSTION_DIVERGENCE_BULL",
+        confidence: 0.85,
+        causalDensity: 3.1
+      });
+    }
+
+    // 3. STRUCTURAL_BREAK (BOS)
+    if (current.close > recentHigh && current.volume > volAvg * 1.3) {
       tokens.push({
         type: "STRUCTURAL_BREAK_BULL",
         confidence: 0.92,
@@ -62,38 +83,29 @@ export class KronosTokenizer {
       });
     }
 
-    // 3. DISPLACEMENT_IMPULSE
-    if (Math.abs(current.close - current.open) > avgRange * 2.0 && current.volume > volAvg * 2.0) {
+    // 4. CAUSAL_RETEST (Intent Validation)
+    const h15High = history.slice(-15, -2).reduce((m, k) => Math.max(m, k.high), 0);
+    if (history[history.length - 2].high > h15High && current.low <= h15High && current.close > h15High && current.volume < volAvg) {
       tokens.push({
-        type: "DISPLACEMENT_IMPULSE",
-        confidence: 0.85,
-        causalDensity: 2.6
+        type: "CAUSAL_RETEST_BULL",
+        confidence: 0.88,
+        causalDensity: 2.5
       });
     }
 
-    // 4. CAUSAL_SURPRISE_REVERSAL
-    const isAntiRegime = (regime === MarketRegime.BullishTrending && current.close < current.open) ||
-                         (regime === MarketRegime.BearishTrending && current.close > current.open);
-    if (isAntiRegime && current.volume > volAvg * 2.5) {
-      tokens.push({
-        type: "CAUSAL_SURPRISE_REVERSAL",
-        confidence: 0.82,
-        causalDensity: 3.3
-      });
-    }
-
-    // Bayesian & Consistency Weighting
-    const synergyBonus = tokens.length >= 2 ? 1.6 : 1.0;
-    const regimePrior = (regime === MarketRegime.BullishTrending) ? 1.45 : 
-                        (regime === MarketRegime.HighVolatilityRange) ? 0.55 : 1.0;
+    // Bayesian & Exhaustion Weighting
+    const synergyBonus = tokens.length >= 2 ? 1.65 : 1.0;
+    const regimePrior = (regime === MarketRegime.BullishTrending) ? 1.5 : 
+                        (regime === MarketRegime.HighVolatilityRange) ? 0.5 : 1.0;
 
     tokens.forEach(t => {
       t.causalDensity *= (synergyBonus * regimePrior);
-      (t as any).halfLife = t.type.includes("RETEST") ? 8 : t.type.includes("BREAK") ? 25 : 12;
+      // Half-life metadata
+      (t as any).halfLife = t.type.includes("EXHAUSTION") ? 4 : t.type.includes("BREAK") ? 25 : 8;
     });
 
     return tokens;
   }
 }
 
-console.log("Kronos Replication Engine Evolved: Causal Re-testing Mode [v26.0425.0831]");
+console.log("Kronos Replication Engine Evolved: Polarization & Exhaustion Mode [v26.0425.1532]");
