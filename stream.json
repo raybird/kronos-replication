@@ -1,0 +1,30 @@
+{
+  "version": "v26.0426.2035",
+  "source": "Kronos-Replication-Spirit",
+  "timestamp": "2026-04-26T12:32:09.929Z",
+  "marketRegime": "EXHAUSTION",
+  "tokens": [
+    {
+      "type": "ABSORPTION_DEMAND",
+      "confidence": 0.94,
+      "causalDensity": 5.25,
+      "intent": "STALLING"
+    },
+    {
+      "type": "LIQUIDITY_RUN_REVERSAL_BULL",
+      "confidence": 0.89,
+      "causalDensity": 5.625,
+      "intent": "NEUTRAL"
+    }
+  ],
+  "rawTail": [
+    {
+      "timestamp": 1777206729929,
+      "open": 50000,
+      "high": 50005,
+      "low": 49900,
+      "close": 50002,
+      "volume": 800
+    }
+  ]
+}
