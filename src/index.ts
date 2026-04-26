@@ -2,7 +2,7 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0425.2032]: Polarization Strength & Causal Entropy Auditing.
+ * Spirit Inheritance [v26.0426.1532]: Liquidity Sinks & Structural Pivot Hardening.
  */
 export class KronosTokenizer {
   /**
@@ -30,7 +30,7 @@ export class KronosTokenizer {
   }
 
   /**
-   * Identifies tokens with polarization and entropy awareness.
+   * Identifies tokens with liquidity sink and pivot awareness.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     const tokens: FinancialToken[] = [];
@@ -41,61 +41,61 @@ export class KronosTokenizer {
     const volAvg = history.slice(-20).reduce((a, b) => a + b.volume, 0) / 20;
     const avgRange = history.slice(-10).reduce((sum, k) => sum + (k.high - k.low), 0) / 10;
     
-    // 1. POLARIZATION_STRENGTH (Quality of Aggression)
+    // 1. LIQUIDITY_SINK (Magnetic Absorption)
+    // Ultra-high volume in a narrow range candle (Hidden Gravity)
     const bodySize = Math.abs(current.close - current.open);
     const totalSize = current.high - current.low;
-    if (current.volume > volAvg * 2.0 && bodySize / totalSize > 0.9) {
+    if (current.volume > volAvg * 3.5 && bodySize / totalSize < 0.15) {
       tokens.push({
-        type: "POLARIZATION_MAX_STRENGTH",
-        confidence: 0.95,
-        causalDensity: 3.5 // Highest density for pure physical intent
+        type: "LIQUIDITY_SINK_NEUTRAL",
+        confidence: 0.92,
+        causalDensity: 3.8 // Highest density for future magnetic levels
       });
     }
 
-    // 2. CAUSAL_ENTROPY_CHURN (Market Indecision at High Volume)
-    if (current.volume > volAvg * 3.0 && bodySize / totalSize < 0.2) {
+    // 2. STRUCTURAL_PIVOT_HARDENING
+    const recentHigh = history.slice(-20, -1).reduce((m, k) => Math.max(m, k.high), 0);
+    const recentLow  = history.slice(-20, -1).reduce((m, k) => Math.min(m, k.low), Infinity);
+    if (Math.abs(current.close - recentHigh) < avgRange * 0.1 && totalSize < avgRange * 0.5) {
       tokens.push({
-        type: "CAUSAL_ENTROPY_CHURN",
+        type: "STRUCTURAL_PIVOT_HARDENING_BULL",
         confidence: 0.88,
+        causalDensity: 2.9
+      });
+    }
+
+    // 3. POLARIZATION_STRENGTH
+    if (current.volume > volAvg * 2.2 && bodySize / totalSize > 0.92) {
+      tokens.push({
+        type: "POLARIZATION_MAX_STRENGTH",
+        confidence: 0.95,
+        causalDensity: 3.5
+      });
+    }
+
+    // 4. EXHAUSTION_DIVERGENCE
+    const prevImpulsiveVol = history.slice(-20, -1).reduce((m, k) => Math.max(m, k.volume), 0);
+    if (current.high > recentHigh && current.volume < prevImpulsiveVol * 0.45) {
+      tokens.push({
+        type: "EXHAUSTION_DIVERGENCE_BEAR",
+        confidence: 0.86,
         causalDensity: 3.2
       });
     }
 
-    // 3. EXHAUSTION_DIVERGENCE
-    const prevImpulsiveVol = history.slice(-20, -1).reduce((m, k) => Math.max(m, k.volume), 0);
-    const recentHigh = history.slice(-20, -1).reduce((m, k) => Math.max(m, k.high), 0);
-    const recentLow  = history.slice(-20, -1).reduce((m, k) => Math.min(m, k.low), Infinity);
-
-    if (current.high > recentHigh && current.volume < prevImpulsiveVol * 0.5) {
-      tokens.push({
-        type: "EXHAUSTION_DIVERGENCE_BEAR",
-        confidence: 0.85,
-        causalDensity: 3.1
-      });
-    }
-
-    // 4. STRUCTURAL_BREAK
-    if (current.close > recentHigh && current.volume > volAvg * 1.5) {
-      tokens.push({
-        type: "STRUCTURAL_BREAK_BULL",
-        confidence: 0.92,
-        causalDensity: 2.8
-      });
-    }
-
-    // Bayesian & Intent Auditing
-    const synergyBonus = tokens.length >= 2 ? 1.7 : 1.0;
-    const regimePrior = (regime === MarketRegime.BullishTrending) ? 1.55 : 
-                        (regime === MarketRegime.HighVolatilityRange) ? 0.45 : 1.0;
+    // Bayesian & Sink Weighting
+    const synergyBonus = tokens.length >= 2 ? 1.75 : 1.0;
+    const regimePrior = (regime === MarketRegime.BullishTrending) ? 1.6 : 
+                        (regime === MarketRegime.HighVolatilityRange) ? 0.4 : 1.0;
 
     tokens.forEach(t => {
       t.causalDensity *= (synergyBonus * regimePrior);
       // Half-life metadata
-      (t as any).halfLife = t.type.includes("POLARIZATION") ? 15 : t.type.includes("CHURN") ? 5 : 10;
+      (t as any).halfLife = t.type.includes("SINK") ? 40 : t.type.includes("POLARIZATION") ? 12 : 8;
     });
 
     return tokens;
   }
 }
 
-console.log("Kronos Replication Engine Evolved: Max Polarization & Churn Mode [v26.0425.2032]");
+console.log("Kronos Replication Engine Evolved: Liquidity Sinks & Pivot Mode [v26.0426.1532]");
