@@ -1,30 +1,32 @@
 {
-  "version": "v26.0426.2035",
+  "version": "v26.0427.0430",
   "source": "Kronos-Replication-Spirit",
-  "timestamp": "2026-04-26T12:32:09.929Z",
-  "marketRegime": "EXHAUSTION",
+  "timestamp": "2026-04-26T20:30:37.523Z",
+  "marketRegime": "LOW_VOL_RANGE",
   "tokens": [
     {
       "type": "ABSORPTION_DEMAND",
-      "confidence": 0.94,
-      "causalDensity": 5.25,
-      "intent": "STALLING"
+      "confidence": 0.96,
+      "causalDensity": 6.72,
+      "regime": "LOW_VOL_RANGE",
+      "vYYMMDD_HHMM": "v26.0427.0430"
     },
     {
-      "type": "LIQUIDITY_RUN_REVERSAL_BULL",
-      "confidence": 0.89,
-      "causalDensity": 5.625,
-      "intent": "NEUTRAL"
+      "type": "EXHAUSTION_PIN_BULL",
+      "confidence": 0.9,
+      "causalDensity": 6.3,
+      "regime": "LOW_VOL_RANGE",
+      "vYYMMDD_HHMM": "v26.0427.0430"
     }
   ],
   "rawTail": [
     {
-      "timestamp": 1777206729929,
-      "open": 50000,
-      "high": 50005,
-      "low": 49900,
-      "close": 50002,
-      "volume": 800
+      "timestamp": 1777235437523,
+      "open": 60190,
+      "high": 60210,
+      "low": 60100,
+      "close": 60195,
+      "volume": 1200
     }
   ]
 }
