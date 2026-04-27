@@ -1,17 +1,19 @@
 {
-  "version": "v26.0427.2040",
+  "version": "v26.0428.0430",
   "source": "Kronos-Replication-Spirit",
-  "timestamp": "2026-04-27T12:44:48.688Z",
+  "timestamp": "2026-04-27T20:30:49.150Z",
   "marketRegime": "LOW_VOL_RANGE",
+  "cbs": 0,
+  "ensembleStatus": "READY_FOR_FUSION",
   "tokens": [],
   "rawTail": [
     {
-      "timestamp": 1777293888688,
-      "open": 100050,
-      "high": 100060,
-      "low": 99980,
-      "close": 100010,
-      "volume": 1200
+      "timestamp": 1777321849149,
+      "open": 110000,
+      "high": 110800,
+      "low": 109980,
+      "close": 110750,
+      "volume": 2500
     }
   ]
 }
