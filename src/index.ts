@@ -2,7 +2,7 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0427.1530]: Trajectory Distillation & Causal Decay.
+ * Spirit Inheritance [v26.0427.2030]: Semantic Entropy & Causal Bias Scoring.
  * 
  * DESIGN PHILOSOPHY:
  * 1. Financial series is a language of 'Intent'.
@@ -56,80 +56,83 @@ export class KronosTokenizer {
     const upperTail = current.high - Math.max(current.open, current.close);
     const lowerTail = Math.min(current.open, current.close) - current.low;
 
-    // --- 1. INSTITUTIONAL ABSORPTION (Spirit v3) ---
-    if (current.volume > volAvg * 3.0 && body / range < 0.2) {
+    // --- 1. INSTITUTIONAL ABSORPTION (Spirit v4) ---
+    if (current.volume > volAvg * 3.2 && body / range < 0.15) {
       const type = upperTail > lowerTail ? "ABSORPTION_SUPPLY" : "ABSORPTION_DEMAND";
       tokens.push({
         type,
-        confidence: 0.96,
-        causalDensity: 5.5
+        confidence: 0.97,
+        causalDensity: 5.8
       });
     }
 
     // --- 2. TRAJECTORY DISTILLATION (Momentum Velocity) ---
-    // Detecting the "Speed" of price change relative to semantic weight
     const priceChange = (current.close - current.open) / current.open;
     const velocity = Math.abs(priceChange) / (rangeAvg / current.open);
-    if (velocity > 2.5 && current.volume > volAvg * 1.5) {
+    if (velocity > 3.0 && current.volume > volAvg * 1.8) {
       tokens.push({
         type: `MOMENTUM_VELOCITY_${current.close > current.open ? "BULL" : "BEAR"}`,
-        confidence: 0.93,
-        causalDensity: 4.8
+        confidence: 0.95,
+        causalDensity: 5.2
       });
     }
 
     // --- 3. LIQUIDITY_VOID (Gravity Gap) ---
-    if (body > rangeAvg * 2.8 && current.volume < volAvg * 1.0) {
+    if (body > rangeAvg * 3.0 && current.volume < volAvg * 0.8) {
       const type = current.close > current.open ? "LIQUIDITY_VOID_UP" : "LIQUIDITY_VOID_DOWN";
       tokens.push({
         type,
-        confidence: 0.89,
-        causalDensity: 4.2
+        confidence: 0.91,
+        causalDensity: 4.5
       });
     }
 
-    // --- 4. STRUCTURAL IMBALANCE (Aggression) ---
-    if (current.volume > volAvg * 2.0 && body / range > 0.85) {
+    // --- 4. HIERARCHICAL STATE ENTROPY ---
+    // Measuring uncertainty: low volatility + declining volume = Accumulation/Equilibrium
+    const recentVolDecline = recent.slice(-5).every((k, i, a) => i === 0 || k.volume <= a[i-1].volume);
+    if (range < rangeAvg * 0.5 && recentVolDecline) {
       tokens.push({
-        type: `STRUCTURAL_IMBALANCE_${current.close > current.open ? "BULL" : "BEAR"}`,
-        confidence: 0.94,
-        causalDensity: 5.0
+        type: "EQUILIBRIUM_COMPRESSION",
+        confidence: 0.88,
+        causalDensity: 3.2
       });
     }
 
-    // --- 5. CAUSAL DECAY & META-REGULATION ---
-    const synergyBonus = tokens.length >= 2 ? 1.6 : 1.0;
-    const regimePrior = (regime === MarketRegime.BullishTrending || regime === MarketRegime.BearishTrending) ? 1.5 : 
-                        (regime === MarketRegime.HighVolatilityRange) ? 0.3 : 1.0;
+    // --- 5. BAYESIAN META-WEIGHTING & SCORING ---
+    const synergyBonus = tokens.length >= 2 ? 1.75 : 1.0;
+    const regimePrior = (regime === MarketRegime.BullishTrending || regime === MarketRegime.BearishTrending) ? 1.6 : 
+                        (regime === MarketRegime.HighVolatilityRange) ? 0.2 : 1.0;
 
+    let cbs = 0; // Causal Bias Score
     tokens.forEach(t => {
       t.causalDensity *= (synergyBonus * regimePrior);
       
-      // Half-life metadata (Decay calibration)
-      const halfLife = t.type.includes("ABSORPTION") ? 48 : 
-                       t.type.includes("VOID") ? 24 : 
-                       t.type.includes("VELOCITY") ? 6 : 12;
+      const direction = t.type.includes("BULL") || t.type.includes("DEMAND") || t.type.includes("VOID_UP") ? 1 :
+                        t.type.includes("BEAR") || t.type.includes("SUPPLY") || t.type.includes("VOID_DOWN") ? -1 : 0;
       
-      (t as any).halfLife = halfLife;
-      (t as any).intent = t.type.includes("ABSORPTION") ? "ACCUMULATION" : 
-                          t.type.includes("VELOCITY") ? "AGGRESSION" : "NEUTRAL";
-      (t as any).vYYMMDD_HHMM = "v26.0427.1530";
+      cbs += (t.causalDensity * direction);
+
+      // Metadata for Inference Layer
+      (t as any).halfLife = t.type.includes("ABSORPTION") ? 60 : 12;
+      (t as any).vYYMMDD_HHMM = "v26.0427.2030";
     });
+
+    (tokens as any).cbs = cbs; // Attach Causal Bias Score to token list
 
     return tokens;
   }
 
   /**
-   * Filters out stale tokens based on their half-life and elapsed time.
+   * Filters out stale tokens based on their half-life.
    */
   public static filterCausalDecay(tokens: FinancialToken[], currentBarIndex: number): FinancialToken[] {
     return tokens.filter(t => {
       const age = currentBarIndex - (t as any).recordedAt;
       const decay = Math.pow(0.5, age / (t as any).halfLife);
-      return t.causalDensity * decay > 1.0; // Prune low-signal noise
+      return t.causalDensity * decay > 1.2; 
     });
   }
 }
 
 // Spirit Evolution Trace
-console.log("Kronos Replication Engine Evolved: Trajectory & Decay Mode [v26.0427.1530]");
+console.log("Kronos Replication Engine Evolved: Entropy & Bias Mode [v26.0427.2030]");
