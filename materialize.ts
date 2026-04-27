@@ -2,41 +2,31 @@ import { KronosTokenizer } from "./src/index";
 import { Kline } from "./src/types";
 import * as fs from "fs";
 
-// Mock Data Generator: Simulating a Liquidity Void followed by an Absorption event
+// Mock Data Generator: Simulating a Structural Imbalance event (Aggressive Breakout)
 function generateMockHistory(): Kline[] {
   const history: Kline[] = [];
-  const basePrice = 60000;
+  const basePrice = 70000;
   
-  // 48 bars of "normal" action
-  for (let i = 0; i < 48; i++) {
+  // 49 bars of "consolidation" action
+  for (let i = 0; i < 49; i++) {
     history.push({
       timestamp: Date.now() - (50 - i) * 60000,
       open: basePrice + Math.random() * 20,
-      high: basePrice + 30,
-      low: basePrice - 10,
+      high: basePrice + 50,
+      low: basePrice - 50,
       close: basePrice + Math.random() * 20,
-      volume: 200 + Math.random() * 100
+      volume: 300 + Math.random() * 100
     });
   }
 
-  // Bar 49: Liquidity Void (Large body, low volume)
-  history.push({
-    timestamp: Date.now() - 60000,
-    open: basePrice,
-    high: basePrice + 200,
-    low: basePrice - 10,
-    close: basePrice + 190,
-    volume: 150 // Relatively low for such a move
-  });
-
-  // Bar 50: Institutional Absorption (High volume, narrow range)
+  // Bar 50: Structural Imbalance (Bull Breakout with high volume/body)
   history.push({
     timestamp: Date.now(),
-    open: basePrice + 190,
-    high: basePrice + 210,
-    low: basePrice + 100, // Long tail
-    close: basePrice + 195,
-    volume: 1200 // Spike in volume
+    open: basePrice + 20,
+    high: basePrice + 300, 
+    low: basePrice + 10,
+    close: basePrice + 280,
+    volume: 1500 // High volume relative to 300-400 avg
   });
 
   return history;
@@ -45,7 +35,7 @@ function generateMockHistory(): Kline[] {
 const history = generateMockHistory();
 const tokens = KronosTokenizer.tokenize(history);
 const streamData = {
-  version: "v26.0427.0430",
+  version: "v26.0427.0830",
   source: "Kronos-Replication-Spirit",
   timestamp: new Date().toISOString(),
   marketRegime: KronosTokenizer.identifyRegime(history),
@@ -54,4 +44,4 @@ const streamData = {
 };
 
 fs.writeFileSync("stream.json", JSON.stringify(streamData, null, 2));
-console.log("Materialized semantic tokens to stream.json [v26.0427.0430]");
+console.log("Materialized semantic tokens to stream.json [v26.0427.0830]");

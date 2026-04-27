@@ -2,7 +2,7 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0427.0430]: Cross-Cycle Sentiment & Liquidity Void Detection.
+ * Spirit Inheritance [v26.0427.0830]: Bayesian Information Gain & Structural Imbalance.
  * 
  * DESIGN PHILOSOPHY:
  * 1. Financial series is a language of 'Intent'.
@@ -57,56 +57,68 @@ export class KronosTokenizer {
     const upperTail = current.high - Math.max(current.open, current.close);
     const lowerTail = Math.min(current.open, current.close) - current.low;
 
-    // --- 1. INSTITUTIONAL ABSORPTION (Refined) ---
+    // --- 1. INSTITUTIONAL ABSORPTION ---
     if (current.volume > volAvg * 3.0 && body / range < 0.2) {
       const type = upperTail > lowerTail ? "ABSORPTION_SUPPLY" : "ABSORPTION_DEMAND";
       tokens.push({
         type,
         confidence: 0.96,
-        causalDensity: 4.8
+        causalDensity: 5.2
       });
     }
 
-    // --- 2. LIQUIDITY_VOID (Gravity Gap) ---
-    // Fast price movement with low volume relative to the range = Unfilled liquidity
-    if (body > rangeAvg * 2.5 && current.volume < volAvg * 1.2) {
+    // --- 2. STRUCTURAL IMBALANCE (Aggression) ---
+    // High volume + High body-to-range ratio breaking local structure
+    const localHigh = recent.slice(0, -1).reduce((m, k) => Math.max(m, k.high), 0);
+    const localLow  = recent.slice(0, -1).reduce((m, k) => Math.min(m, k.low), Infinity);
+    
+    if (current.volume > volAvg * 1.8 && body / range > 0.8) {
+      if (current.close > localHigh) {
+        tokens.push({
+          type: "IMBALANCE_BULL_BREAK",
+          confidence: 0.92,
+          causalDensity: 4.5
+        });
+      } else if (current.close < localLow) {
+        tokens.push({
+          type: "IMBALANCE_BEAR_BREAK",
+          confidence: 0.92,
+          causalDensity: 4.5
+        });
+      }
+    }
+
+    // --- 3. LIQUIDITY_VOID (Gravity Gap) ---
+    if (body > rangeAvg * 2.8 && current.volume < volAvg * 1.0) {
       const type = current.close > current.open ? "LIQUIDITY_VOID_UP" : "LIQUIDITY_VOID_DOWN";
       tokens.push({
         type,
-        confidence: 0.88,
-        causalDensity: 3.5 // Market likely to return to fill the void
-      });
-    }
-
-    // --- 3. CROSS_CYCLE_SYNERGY (Momentum Alignment) ---
-    const isBullAlignment = current.close > prev.close && regime === MarketRegime.BullishTrending;
-    const isBearAlignment = current.close < prev.close && regime === MarketRegime.BearishTrending;
-    if ((isBullAlignment || isBearAlignment) && current.volume > volAvg * 1.5) {
-      tokens.push({
-        type: `CYCLE_SYNERGY_${current.close > current.open ? "BULL" : "BEAR"}`,
-        confidence: 0.92,
-        causalDensity: 3.2
+        confidence: 0.89,
+        causalDensity: 3.8
       });
     }
 
     // --- 4. EXHAUSTION_PIN (Reversal Intent) ---
-    if (range > rangeAvg * 2.0 && (upperTail > range * 0.6 || lowerTail > range * 0.6)) {
+    if (range > rangeAvg * 2.2 && (upperTail > range * 0.65 || lowerTail > range * 0.65)) {
       tokens.push({
         type: `EXHAUSTION_PIN_${upperTail > lowerTail ? "BEAR" : "BULL"}`,
-        confidence: 0.90,
-        causalDensity: 4.5
+        confidence: 0.91,
+        causalDensity: 4.8
       });
     }
 
-    // --- 5. SEMANTIC RE-CALIBRATION ---
-    const synergy = tokens.length >= 2 ? 1.4 : 1.0;
-    const contextGuard = (regime === MarketRegime.HighVolatilityRange) ? 0.5 : 1.0;
+    // --- 5. BAYESIAN SEMANTIC RE-CALIBRATION ---
+    const synergy = tokens.length >= 2 ? 1.5 : 1.0;
+    const regimePrior = (regime === MarketRegime.BullishTrending || regime === MarketRegime.BearishTrending) ? 1.4 : 
+                        (regime === MarketRegime.HighVolatilityRange) ? 0.4 : 1.0;
 
     tokens.forEach(t => {
-      t.causalDensity *= (synergy * contextGuard);
-      // Meta-tagging for down-stream Causal Inference
-      (t as any).regime = regime;
-      (t as any).vYYMMDD_HHMM = "v26.0427.0430";
+      t.causalDensity *= (synergy * regimePrior);
+      // Half-life metadata based on token type
+      const halfLife = t.type.includes("ABSORPTION") ? 40 : 
+                       t.type.includes("VOID") ? 20 : 8;
+      (t as any).halfLife = halfLife;
+      (t as any).vYYMMDD_HHMM = "v26.0427.0830";
     });
 
     return tokens;
@@ -114,4 +126,4 @@ export class KronosTokenizer {
 }
 
 // Spirit Evolution Trace
-console.log("Kronos Replication Engine Evolved: Cross-Cycle & Void Mode [v26.0427.0430]");
+console.log("Kronos Replication Engine Evolved: Bayesian & Imbalance Mode [v26.0427.0830]");
