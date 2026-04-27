@@ -2,7 +2,7 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0427.0830]: Bayesian Information Gain & Structural Imbalance.
+ * Spirit Inheritance [v26.0427.1530]: Trajectory Distillation & Causal Decay.
  * 
  * DESIGN PHILOSOPHY:
  * 1. Financial series is a language of 'Intent'.
@@ -46,7 +46,6 @@ export class KronosTokenizer {
 
     const regime = this.identifyRegime(history);
     const current = history[history.length - 1];
-    const prev = history[history.length - 2];
     const recent = history.slice(-20);
     
     const volAvg = history.slice(-50).reduce((a, b) => a + b.volume, 0) / 50;
@@ -57,35 +56,26 @@ export class KronosTokenizer {
     const upperTail = current.high - Math.max(current.open, current.close);
     const lowerTail = Math.min(current.open, current.close) - current.low;
 
-    // --- 1. INSTITUTIONAL ABSORPTION ---
+    // --- 1. INSTITUTIONAL ABSORPTION (Spirit v3) ---
     if (current.volume > volAvg * 3.0 && body / range < 0.2) {
       const type = upperTail > lowerTail ? "ABSORPTION_SUPPLY" : "ABSORPTION_DEMAND";
       tokens.push({
         type,
         confidence: 0.96,
-        causalDensity: 5.2
+        causalDensity: 5.5
       });
     }
 
-    // --- 2. STRUCTURAL IMBALANCE (Aggression) ---
-    // High volume + High body-to-range ratio breaking local structure
-    const localHigh = recent.slice(0, -1).reduce((m, k) => Math.max(m, k.high), 0);
-    const localLow  = recent.slice(0, -1).reduce((m, k) => Math.min(m, k.low), Infinity);
-    
-    if (current.volume > volAvg * 1.8 && body / range > 0.8) {
-      if (current.close > localHigh) {
-        tokens.push({
-          type: "IMBALANCE_BULL_BREAK",
-          confidence: 0.92,
-          causalDensity: 4.5
-        });
-      } else if (current.close < localLow) {
-        tokens.push({
-          type: "IMBALANCE_BEAR_BREAK",
-          confidence: 0.92,
-          causalDensity: 4.5
-        });
-      }
+    // --- 2. TRAJECTORY DISTILLATION (Momentum Velocity) ---
+    // Detecting the "Speed" of price change relative to semantic weight
+    const priceChange = (current.close - current.open) / current.open;
+    const velocity = Math.abs(priceChange) / (rangeAvg / current.open);
+    if (velocity > 2.5 && current.volume > volAvg * 1.5) {
+      tokens.push({
+        type: `MOMENTUM_VELOCITY_${current.close > current.open ? "BULL" : "BEAR"}`,
+        confidence: 0.93,
+        causalDensity: 4.8
+      });
     }
 
     // --- 3. LIQUIDITY_VOID (Gravity Gap) ---
@@ -94,36 +84,52 @@ export class KronosTokenizer {
       tokens.push({
         type,
         confidence: 0.89,
-        causalDensity: 3.8
+        causalDensity: 4.2
       });
     }
 
-    // --- 4. EXHAUSTION_PIN (Reversal Intent) ---
-    if (range > rangeAvg * 2.2 && (upperTail > range * 0.65 || lowerTail > range * 0.65)) {
+    // --- 4. STRUCTURAL IMBALANCE (Aggression) ---
+    if (current.volume > volAvg * 2.0 && body / range > 0.85) {
       tokens.push({
-        type: `EXHAUSTION_PIN_${upperTail > lowerTail ? "BEAR" : "BULL"}`,
-        confidence: 0.91,
-        causalDensity: 4.8
+        type: `STRUCTURAL_IMBALANCE_${current.close > current.open ? "BULL" : "BEAR"}`,
+        confidence: 0.94,
+        causalDensity: 5.0
       });
     }
 
-    // --- 5. BAYESIAN SEMANTIC RE-CALIBRATION ---
-    const synergy = tokens.length >= 2 ? 1.5 : 1.0;
-    const regimePrior = (regime === MarketRegime.BullishTrending || regime === MarketRegime.BearishTrending) ? 1.4 : 
-                        (regime === MarketRegime.HighVolatilityRange) ? 0.4 : 1.0;
+    // --- 5. CAUSAL DECAY & META-REGULATION ---
+    const synergyBonus = tokens.length >= 2 ? 1.6 : 1.0;
+    const regimePrior = (regime === MarketRegime.BullishTrending || regime === MarketRegime.BearishTrending) ? 1.5 : 
+                        (regime === MarketRegime.HighVolatilityRange) ? 0.3 : 1.0;
 
     tokens.forEach(t => {
-      t.causalDensity *= (synergy * regimePrior);
-      // Half-life metadata based on token type
-      const halfLife = t.type.includes("ABSORPTION") ? 40 : 
-                       t.type.includes("VOID") ? 20 : 8;
+      t.causalDensity *= (synergyBonus * regimePrior);
+      
+      // Half-life metadata (Decay calibration)
+      const halfLife = t.type.includes("ABSORPTION") ? 48 : 
+                       t.type.includes("VOID") ? 24 : 
+                       t.type.includes("VELOCITY") ? 6 : 12;
+      
       (t as any).halfLife = halfLife;
-      (t as any).vYYMMDD_HHMM = "v26.0427.0830";
+      (t as any).intent = t.type.includes("ABSORPTION") ? "ACCUMULATION" : 
+                          t.type.includes("VELOCITY") ? "AGGRESSION" : "NEUTRAL";
+      (t as any).vYYMMDD_HHMM = "v26.0427.1530";
     });
 
     return tokens;
   }
+
+  /**
+   * Filters out stale tokens based on their half-life and elapsed time.
+   */
+  public static filterCausalDecay(tokens: FinancialToken[], currentBarIndex: number): FinancialToken[] {
+    return tokens.filter(t => {
+      const age = currentBarIndex - (t as any).recordedAt;
+      const decay = Math.pow(0.5, age / (t as any).halfLife);
+      return t.causalDensity * decay > 1.0; // Prune low-signal noise
+    });
+  }
 }
 
 // Spirit Evolution Trace
-console.log("Kronos Replication Engine Evolved: Bayesian & Imbalance Mode [v26.0427.0830]");
+console.log("Kronos Replication Engine Evolved: Trajectory & Decay Mode [v26.0427.1530]");
