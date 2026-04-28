@@ -2,16 +2,16 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0428.0430]: Ensemble Scoring & Trajectory Pathing.
+ * Spirit Inheritance [v26.0428.0830]: Structural Memory & Purged Embargo.
  * 
  * DESIGN PHILOSOPHY:
- * 1. Financial series is a language of 'Collective Intent'.
- * 2. Causal Density = (Ensemble Gain * Synergy) / (Entropy * Decay).
- * 3. Sovereignty is achieved through multi-agent intent fusion & purged validation.
+ * 1. Financial series is a language of 'Intent'.
+ * 2. Causal Density = (Information Gain * Structural Synergy) / (Embargo * Decay).
+ * 3. Sovereignty is achieved through historical memory validation & physical isolation.
  */
 export class KronosTokenizer {
   /**
-   * Identifies the current Market Regime with Multi-Scale Entropy & Displacement awareness.
+   * Identifies the current Market Regime with Multi-Scale Entropy.
    */
   public static identifyRegime(history: Kline[]): MarketRegime {
     if (history.length < 60) return MarketRegime.LowVolatilityRange;
@@ -23,19 +23,15 @@ export class KronosTokenizer {
     const avgClose = lookback60.reduce((sum, k) => sum + k.close, 0) / 60;
     const volatility = Math.sqrt(lookback60.reduce((sum, k) => sum + Math.pow(k.close - avgClose, 2), 0) / 60) / avgClose;
 
-    // Regime Classification (Enhanced Thresholds)
     if (volatility > 0.085) return MarketRegime.HighVolatilityRange;
     if (move > 0.06) return MarketRegime.BullishTrending;
     if (move < -0.06) return MarketRegime.BearishTrending;
     
-    const volMA = lookback60.reduce((a, b) => a + b.volume, 0) / 60;
-    if (last.volume > volMA * 6.5) return MarketRegime.Exhaustion;
-
     return MarketRegime.LowVolatilityRange;
   }
 
   /**
-   * Main tokenization logic implementing Ensemble-Ready semantic decoding.
+   * Main tokenization logic implementing Structural Memory.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     const tokens: FinancialToken[] = [];
@@ -46,81 +42,63 @@ export class KronosTokenizer {
     const recent = history.slice(-20);
     const volAvg = history.slice(-60).reduce((a, b) => a + b.volume, 0) / 60;
     const rangeAvg = recent.reduce((sum, k) => sum + (k.high - k.low), 0) / 20;
-    
+
     const body = Math.abs(current.close - current.open);
     const range = current.high - current.low;
-    const upperTail = current.high - Math.max(current.open, current.close);
-    const lowerTail = Math.min(current.open, current.close) - current.low;
 
-    // --- 1. ENSEMBLE PERCEPTION: STRUCTURAL AUDIT ---
-    // High-conviction Absorption detection
-    if (current.volume > volAvg * 4.0 && body / range < 0.1) {
-      const type = upperTail > lowerTail ? "ENSEMBLE_ABSORPTION_SUPPLY" : "ENSEMBLE_ABSORPTION_DEMAND";
+    // --- 1. STRUCTURAL MEMORY: ORDER BLOCK VALIDATION ---
+    // Detecting if price is interacting with a previous high-volume tight-range zone
+    const historicalOBs = history.slice(-50, -10).filter(k => 
+      k.volume > volAvg * 2.5 && (k.high - k.low) < rangeAvg * 0.8
+    );
+    const interactingOB = historicalOBs.find(ob => 
+      current.low <= ob.high && current.high >= ob.low
+    );
+
+    if (interactingOB && current.volume > volAvg * 1.5) {
       tokens.push({
-        type,
-        confidence: 0.99, // Ensemble baseline
-        causalDensity: 7.5 // Peak density for intent fusion
+        type: "STRUCTURAL_OB_RETEST",
+        confidence: 0.95,
+        causalDensity: 6.5
       });
     }
 
-    // --- 2. TRAJECTORY PATHING: DISPLACEMENT_VELOCITY ---
-    const pathVelocity = body / rangeAvg;
-    if (pathVelocity > 3.5 && current.volume > volAvg * 2.5) {
+    // --- 2. ENSEMBLE PERCEPTION: ABSORPTION ---
+    if (current.volume > volAvg * 3.5 && body / range < 0.15) {
       tokens.push({
-        type: `TRAJECTORY_PATH_VELOCITY_${current.close > current.open ? "BULL" : "BEAR"}`,
-        confidence: 0.97,
-        causalDensity: 6.8
+        type: "ENSEMBLE_ABSORPTION",
+        confidence: 0.98,
+        causalDensity: 7.0
       });
     }
 
-    // --- 3. LIQUIDITY ENSEMBLE: RECURSIVE VOID fill ---
-    const recentVoid = history.slice(-50, -1).some(k => (k.high - k.low) > rangeAvg * 3.0 && k.volume < volAvg);
-    if (recentVoid && current.volume > volAvg * 1.5 && (lowerTail > body || upperTail > body)) {
-      tokens.push({
-        type: "ENSEMBLE_LIQUIDITY_REVERSAL",
-        confidence: 0.94,
-        causalDensity: 5.5
-      });
-    }
+    // --- 3. PURGED EMBARGO METADATA ---
+    const synergyBonus = tokens.length >= 2 ? 1.9 : 1.0;
+    const regimePrior = (regime === MarketRegime.BullishTrending || regime === MarketRegime.BearishTrending) ? 1.7 : 1.0;
 
-    // --- 4. PURGED VALIDATION METADATA ---
-    // Adding context for EnsembleInference layer
-    const synergyBonus = tokens.length >= 2 ? 2.0 : 1.0;
-    const regimePrior = (regime === MarketRegime.BullishTrending || regime === MarketRegime.BearishTrending) ? 1.8 : 
-                        (regime === MarketRegime.HighVolatilityRange) ? 0.05 : 1.0;
-
-    let cbs = 0; 
+    let cbs = 0;
     tokens.forEach(t => {
       t.causalDensity *= (synergyBonus * regimePrior);
       
-      const direction = t.type.includes("BULL") || t.type.includes("DEMAND") || t.type.includes("REVERSAL") ? 1 : -1;
-      cbs += (t.causalDensity * direction);
-
-      // Ensemble Metadata
-      (t as any).ensembleLayer = "PERCEPTION_STRUCTURAL";
-      (t as any).purgedAge = 0; // Fresh signal
-      (t as any).halfLife = t.type.includes("ABSORPTION") ? 96 : 8; // Extended half-life for structural intents
-      (t as any).vYYMMDD_HHMM = "v26.0428.0430";
+      // Embargo Discipline: Setting a mandatory cooling period
+      (t as any).embargoBars = 12; // 12-bar embargo for causal isolation
+      (t as any).recordedAt = history.length - 1;
+      (t as any).vYYMMDD_HHMM = "v26.0428.0830";
     });
-
-    (tokens as any).cbs = cbs; 
-    (tokens as any).ensembleStatus = "READY_FOR_FUSION";
 
     return tokens;
   }
 
   /**
-   * Filters out stale tokens using Bayesian Decay and Purging principles.
+   * Validates tokens against the Embargo规訓.
    */
-  public static filterCausalDecay(tokens: FinancialToken[], currentBarIndex: number): FinancialToken[] {
+  public static validateEmbargo(tokens: FinancialToken[], currentBarIndex: number): FinancialToken[] {
     return tokens.filter(t => {
       const age = currentBarIndex - (t as any).recordedAt;
-      const decay = Math.pow(0.5, age / (t as any).halfLife);
-      const isPurged = (t as any).purgedStatus === "INVALIDATED";
-      return !isPurged && (t.causalDensity * decay > 2.0); 
+      return age >= (t as any).embargoBars; // Signal only valid after embargo
     });
   }
 }
 
-// Execution Trace
-console.log("Kronos Replication Engine Evolved: Ensemble & Pathing Mode [v26.0428.0430]");
+// Spirit Evolution Trace
+console.log("Kronos Replication Engine Evolved: Structural Memory Mode [v26.0428.0830]");
