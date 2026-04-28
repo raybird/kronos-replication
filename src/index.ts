@@ -2,16 +2,16 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0428.0830]: Structural Memory & Purged Embargo.
+ * Spirit Inheritance [v26.0428.2030]: Intent Chaining & Causal Imbalance.
  * 
  * DESIGN PHILOSOPHY:
- * 1. Financial series is a language of 'Intent'.
- * 2. Causal Density = (Information Gain * Structural Synergy) / (Embargo * Decay).
- * 3. Sovereignty is achieved through historical memory validation & physical isolation.
+ * 1. Financial series is a language of 'Chained Intent'.
+ * 2. Causal Density = (Chain Probability * Synergy) / (Chaos * Decay).
+ * 3. Sovereignty is achieved through tracking the causal transition between states.
  */
 export class KronosTokenizer {
   /**
-   * Identifies the current Market Regime with Multi-Scale Entropy.
+   * Identifies the current Market Regime with Path-Based Entropy.
    */
   public static identifyRegime(history: Kline[]): MarketRegime {
     if (history.length < 60) return MarketRegime.LowVolatilityRange;
@@ -23,7 +23,14 @@ export class KronosTokenizer {
     const avgClose = lookback60.reduce((sum, k) => sum + k.close, 0) / 60;
     const volatility = Math.sqrt(lookback60.reduce((sum, k) => sum + Math.pow(k.close - avgClose, 2), 0) / 60) / avgClose;
 
-    if (volatility > 0.085) return MarketRegime.HighVolatilityRange;
+    let pathSum = 0;
+    for (let i = 1; i < lookback60.length; i++) {
+      pathSum += Math.abs(Math.log(lookback60[i].close / lookback60[i-1].close));
+    }
+    const netMove = Math.abs(Math.log(last.close / lookback60[0].close));
+    const trajectoryEntropy = netMove === 0 ? pathSum : pathSum / netMove;
+
+    if (volatility > 0.09 || trajectoryEntropy > 5.0) return MarketRegime.HighVolatilityRange;
     if (move > 0.06) return MarketRegime.BullishTrending;
     if (move < -0.06) return MarketRegime.BearishTrending;
     
@@ -31,7 +38,7 @@ export class KronosTokenizer {
   }
 
   /**
-   * Main tokenization logic implementing Structural Memory.
+   * Main tokenization logic implementing Chained Intent decoding.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     const tokens: FinancialToken[] = [];
@@ -45,60 +52,62 @@ export class KronosTokenizer {
 
     const body = Math.abs(current.close - current.open);
     const range = current.high - current.low;
+    const upperWick = current.high - Math.max(current.open, current.close);
+    const lowerWick = Math.min(current.open, current.close) - current.low;
 
-    // --- 1. STRUCTURAL MEMORY: ORDER BLOCK VALIDATION ---
-    // Detecting if price is interacting with a previous high-volume tight-range zone
-    const historicalOBs = history.slice(-50, -10).filter(k => 
-      k.volume > volAvg * 2.5 && (k.high - k.low) < rangeAvg * 0.8
-    );
-    const interactingOB = historicalOBs.find(ob => 
-      current.low <= ob.high && current.high >= ob.low
-    );
+    // --- 1. INTENT CHAINING: SWEEP TO BREAKOUT ---
+    const localHigh = recent.slice(-10, -1).reduce((m, k) => Math.max(m, k.high), 0);
+    const localLow  = recent.slice(-10, -1).reduce((m, k) => Math.min(m, k.low), Infinity);
+    
+    // Look for a sweep in the previous 5 bars
+    const recentSweepBull = history.slice(-6, -1).some(k => k.low < localLow && k.close > localLow);
+    const recentSweepBear = history.slice(-6, -1).some(k => k.high > localHigh && k.close < localHigh);
 
-    if (interactingOB && current.volume > volAvg * 1.5) {
+    if (recentSweepBull && current.close > localHigh && current.volume > volAvg * 2.0) {
       tokens.push({
-        type: "STRUCTURAL_OB_RETEST",
-        confidence: 0.95,
-        causalDensity: 6.5
-      });
-    }
-
-    // --- 2. ENSEMBLE PERCEPTION: ABSORPTION ---
-    if (current.volume > volAvg * 3.5 && body / range < 0.15) {
-      tokens.push({
-        type: "ENSEMBLE_ABSORPTION",
+        type: "CHAIN_SWEEP_CONFIRMED_BULL",
         confidence: 0.98,
-        causalDensity: 7.0
+        causalDensity: 8.5 // Extremely high causal power
       });
     }
 
-    // --- 3. PURGED EMBARGO METADATA ---
-    const synergyBonus = tokens.length >= 2 ? 1.9 : 1.0;
-    const regimePrior = (regime === MarketRegime.BullishTrending || regime === MarketRegime.BearishTrending) ? 1.7 : 1.0;
+    // --- 2. CAUSAL IMBALANCE (Net Aggression) ---
+    const priceChange = (current.close - current.open) / current.open;
+    const volWeight = current.volume / volAvg;
+    if (Math.abs(priceChange) > (rangeAvg / current.open) * 2.0 && volWeight > 1.5) {
+      tokens.push({
+        type: `IMBALANCE_AGGRESSION_${current.close > current.open ? "BULL" : "BEAR"}`,
+        confidence: 0.94,
+        causalDensity: 6.2
+      });
+    }
 
-    let cbs = 0;
+    // --- 3. RECURSIVE LIQUIDITY AUDIT ---
+    if (body > rangeAvg * 3.0 && current.volume < volAvg * 0.8) {
+      tokens.push({
+        type: `LIQUIDITY_GAP_${current.close > current.open ? "UP" : "DOWN"}`,
+        confidence: 0.89,
+        causalDensity: 4.5
+      });
+    }
+
+    // --- 4. BAYESIAN META-WEIGHTING ---
+    const synergyBonus = tokens.length >= 2 ? 2.0 : 1.0;
+    const regimePrior = (regime === MarketRegime.BullishTrending || regime === MarketRegime.BearishTrending) ? 1.7 : 
+                        (regime === MarketRegime.HighVolatilityRange) ? 0.2 : 1.0;
+
     tokens.forEach(t => {
       t.causalDensity *= (synergyBonus * regimePrior);
       
-      // Embargo Discipline: Setting a mandatory cooling period
-      (t as any).embargoBars = 12; // 12-bar embargo for causal isolation
-      (t as any).recordedAt = history.length - 1;
-      (t as any).vYYMMDD_HHMM = "v26.0428.0830";
+      // Half-life Metadata
+      (t as any).halfLife = t.type.includes("CHAIN") ? 72 : t.type.includes("GAP") ? 24 : 12;
+      (t as any).intent = t.type.includes("CHAIN") ? "MARKET_SHIFT" : "MOMENTUM";
+      (t as any).vYYMMDD_HHMM = "v26.0428.2030";
     });
 
     return tokens;
   }
-
-  /**
-   * Validates tokens against the Embargo规訓.
-   */
-  public static validateEmbargo(tokens: FinancialToken[], currentBarIndex: number): FinancialToken[] {
-    return tokens.filter(t => {
-      const age = currentBarIndex - (t as any).recordedAt;
-      return age >= (t as any).embargoBars; // Signal only valid after embargo
-    });
-  }
 }
 
 // Spirit Evolution Trace
-console.log("Kronos Replication Engine Evolved: Structural Memory Mode [v26.0428.0830]");
+console.log("Kronos Replication Engine Evolved: Chained Intent Mode [v26.0428.2030]");
