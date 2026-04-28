@@ -2,53 +2,44 @@ import { KronosTokenizer } from "./src/index";
 import { Kline } from "./src/types";
 import * as fs from "fs";
 
-// Mock Data Generator: Simulating Intent Chaining (Sweep then Breakout)
+// Mock Data Generator: Simulating Squeeze then Ensemble Displacement
 function generateMockHistory(): Kline[] {
   const history: Kline[] = [];
-  const basePrice = 130000;
+  const basePrice = 120000;
   
-  // 55 bars total before the sweep
+  // 55 bars of decreasing volatility (The Squeeze)
   for (let i = 0; i < 55; i++) {
+    const range = 50 * (1 - i / 100); // Progressively tighter
     history.push({
       timestamp: Date.now() - (60 - i) * 60000,
-      open: basePrice + Math.random() * 50,
-      high: basePrice + 100,
-      low: basePrice - 100,
-      close: basePrice + Math.random() * 50,
-      volume: 400
-    });
-  }
-
-  // Bar 56: Liquidity Sweep Bull (Low pierce, close back in range)
-  history.push({
-    timestamp: Date.now() - 4 * 60000,
-    open: basePrice,
-    high: basePrice + 50,
-    low: basePrice - 200, // Sweep low
-    close: basePrice + 10,
-    volume: 800
-  });
-
-  // Bar 57-59: Consolidation
-  for (let i = 57; i < 60; i++) {
-    history.push({
-      timestamp: Date.now() - (60 - i) * 60000,
-      open: basePrice + 10,
-      high: basePrice + 40,
+      open: basePrice + Math.random() * range,
+      high: basePrice + range + 10,
       low: basePrice - 10,
-      close: basePrice + 20,
-      volume: 300
+      close: basePrice + Math.random() * range,
+      volume: 400 * (1 - i / 100) // Decreasing volume
     });
   }
 
-  // Bar 60: Chained Breakout (High body, high volume)
+  // Bars 56-59: Extreme Squeeze
+  for (let i = 56; i < 60; i++) {
+    history.push({
+      timestamp: Date.now() - (60 - i) * 60000,
+      open: basePrice,
+      high: basePrice + 5,
+      low: basePrice - 5,
+      close: basePrice + 2,
+      volume: 50 // High compression
+    });
+  }
+
+  // Bar 60: Ensemble Displacement (Explosive move)
   history.push({
     timestamp: Date.now(),
-    open: basePrice + 20,
-    high: basePrice + 400, 
-    low: basePrice + 10,
-    close: basePrice + 380,
-    volume: 2000 // Confirmation volume
+    open: basePrice + 2,
+    high: basePrice + 800, 
+    low: basePrice - 10,
+    close: basePrice + 780,
+    volume: 3000 // Huge confirmation volume
   });
 
   return history;
@@ -57,13 +48,14 @@ function generateMockHistory(): Kline[] {
 const history = generateMockHistory();
 const tokens = KronosTokenizer.tokenize(history);
 const streamData = {
-  version: "v26.0428.2030",
+  version: "v26.0429.0430",
   source: "Kronos-Replication-Spirit",
   timestamp: new Date().toISOString(),
   marketRegime: KronosTokenizer.identifyRegime(history),
+  cbs: (tokens as any).cbs,
   tokens: tokens,
   rawTail: history.slice(-1)
 };
 
 fs.writeFileSync("stream.json", JSON.stringify(streamData, null, 2));
-console.log(`Materialized Chained Intent tokens [v26.0428.2030]`);
+console.log(`Materialized CPCV-Ready tokens with CBS: ${streamData.cbs} [v26.0429.0430]`);

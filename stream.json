@@ -1,17 +1,28 @@
 {
-  "version": "v26.0428.2030",
+  "version": "v26.0429.0430",
   "source": "Kronos-Replication-Spirit",
-  "timestamp": "2026-04-28T12:35:54.723Z",
+  "timestamp": "2026-04-28T20:32:34.377Z",
   "marketRegime": "LOW_VOL_RANGE",
-  "tokens": [],
+  "cbs": 1.2000000000000002,
+  "tokens": [
+    {
+      "type": "ENSEMBLE_DISPLACEMENT_BULL",
+      "confidence": 0.97,
+      "causalDensity": 1.2000000000000002,
+      "purged": false,
+      "embargoBars": 18,
+      "ensembleId": "ENS_1777408354377",
+      "vYYMMDD_HHMM": "v26.0429.0430"
+    }
+  ],
   "rawTail": [
     {
-      "timestamp": 1777379754722,
-      "open": 130020,
-      "high": 130400,
-      "low": 130010,
-      "close": 130380,
-      "volume": 2000
+      "timestamp": 1777408354376,
+      "open": 120002,
+      "high": 120800,
+      "low": 119990,
+      "close": 120780,
+      "volume": 3000
     }
   ]
 }
