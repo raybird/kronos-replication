@@ -2,43 +2,41 @@ import { KronosTokenizer } from "./src/index";
 import { Kline } from "./src/types";
 import * as fs from "fs";
 
-// Mock Data Generator: Simulating Trajectory Alignment & POC Retest
+// Mock Data Generator: Simulating Polarization & Pricing Power
 function generateMockHistory(): Kline[] {
   const history: Kline[] = [];
   const basePrice = 130000;
   
-  // 59 bars total
-  for (let i = 0; i < 59; i++) {
-    if (i === 15) {
-      // Historical High-Volume Breakout (Slope reference)
-      history.push({
-        timestamp: Date.now() - (60 - i) * 60000,
-        open: basePrice,
-        high: basePrice + 500,
-        low: basePrice - 10,
-        close: basePrice + 450,
-        volume: 3000 // High volume node
-      });
-    } else {
-      history.push({
-        timestamp: Date.now() - (60 - i) * 60000,
-        open: basePrice + 450 + Math.random() * 50,
-        high: basePrice + 600,
-        low: basePrice + 300,
-        close: basePrice + 450 + Math.random() * 50,
-        volume: 500
-      });
-    }
+  // 58 bars of noise
+  for (let i = 0; i < 58; i++) {
+    history.push({
+      timestamp: Date.now() - (60 - i) * 60000,
+      open: basePrice + Math.random() * 50,
+      high: basePrice + 100,
+      low: basePrice - 100,
+      close: basePrice + Math.random() * 50,
+      volume: 500
+    });
   }
 
-  // Bar 60: Retesting the POC at 130450 and aligning with the breakout slope
+  // Bar 59: Strong Thrust (Prev)
+  history.push({
+    timestamp: Date.now() - 60000,
+    open: basePrice,
+    high: basePrice + 600,
+    low: basePrice - 50,
+    close: basePrice + 550,
+    volume: 1500
+  });
+
+  // Bar 60: Polarization & Sustained Pricing Power (Close at High)
   history.push({
     timestamp: Date.now(),
-    open: basePrice + 450,
-    high: basePrice + 550,
-    low: basePrice + 440,
-    close: basePrice + 540,
-    volume: 1800 
+    open: basePrice + 550,
+    high: basePrice + 1200,
+    low: basePrice + 540,
+    close: basePrice + 1195,
+    volume: 3500 // High Volume + Close near High
   });
 
   return history;
@@ -47,7 +45,7 @@ function generateMockHistory(): Kline[] {
 const history = generateMockHistory();
 const tokens = KronosTokenizer.tokenize(history);
 const streamData = {
-  version: "v26.0429.0830",
+  version: "v26.0429.1530",
   source: "Kronos-Replication-Spirit",
   timestamp: new Date().toISOString(),
   marketRegime: KronosTokenizer.identifyRegime(history),
@@ -56,4 +54,4 @@ const streamData = {
 };
 
 fs.writeFileSync("stream.json", JSON.stringify(streamData, null, 2));
-console.log(`Materialized Trajectory Alignment tokens [v26.0429.0830]`);
+console.log(`Materialized Polarization & Pricing Power tokens [v26.0429.1530]`);

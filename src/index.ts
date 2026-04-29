@@ -2,7 +2,7 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0429.0830]: Trajectory Alignment & Structural Memory.
+ * Spirit Inheritance [v26.0429.2000]: Liquidity Void & Volatility Self-Similarity.
  * 
  * DESIGN PHILOSOPHY:
  * 1. Financial series is a language of 'Pathways'.
@@ -47,7 +47,6 @@ export class KronosTokenizer {
     const range = current.high - current.low;
 
     // --- 1. TRAJECTORY ALIGNMENT (Path Matching) ---
-    // Detecting if current path slope aligns with historical breakout slopes
     const currentSlope = (current.close - history[history.length - 5].close) / 5;
     const histBreakouts = history.slice(-50, -5).filter((k, i, arr) => 
       i > 0 && k.volume > volAvg * 2.5 && Math.abs(k.close - arr[i-1].close) > rangeAvg * 1.5
@@ -62,55 +61,62 @@ export class KronosTokenizer {
       });
     }
 
-    // --- 2. STRUCTURAL MEMORY: POC RETEST ---
-    // Finding the highest volume price node in the last 60 bars
-    let pocPrice = 0;
-    let maxVol = 0;
-    history.slice(-60).forEach(k => {
-      if (k.volume > maxVol) {
-        maxVol = k.volume;
-        pocPrice = k.close;
+    // --- 2. LIQUIDITY VOID (New v2.0) ---
+    // Detect "Fast Price Gaps" where price moves significantly on lower relative volume
+    // This indicates a lack of opposing interest (The Void)
+    if (body > rangeAvg * 2.5 && current.volume < volAvg * 1.5) {
+      tokens.push({
+        type: `LIQUIDITY_VOID_${current.close > current.open ? "UP" : "DOWN"}`,
+        confidence: 0.92,
+        causalDensity: 9.1 // Extremely high causal significance
+      });
+    }
+
+    // --- 3. PRICING POWER SUSTENANCE ---
+    const prev = history[history.length - 2];
+    const thrust = (current.close - current.open);
+    const prevThrust = (prev.close - prev.open);
+    
+    if (Math.abs(thrust) > rangeAvg * 1.2 && current.volume > volAvg * 1.2) {
+      const sustainFactor = (Math.abs(thrust) / Math.abs(prevThrust || 1));
+      tokens.push({
+        type: `PRICING_POWER_${thrust > 0 ? "EXPANSION" : "COLLAPSE"}`,
+        confidence: Math.min(0.98, 0.8 * sustainFactor),
+        causalDensity: 7.2
+      });
+    }
+
+    // --- 4. FRACTAL VOLATILITY POLARIZATION ---
+    const upperShadow = current.high - Math.max(current.open, current.close);
+    const lowerShadow = Math.min(current.open, current.close) - current.low;
+    
+    if (current.volume > volAvg * 2.0) {
+      if (upperShadow < range * 0.1 && thrust > 0) {
+        tokens.push({ type: "POLARIZATION_BULL_INTENT", confidence: 0.97, causalDensity: 8.5 });
+      } else if (lowerShadow < range * 0.1 && thrust < 0) {
+        tokens.push({ type: "POLARIZATION_BEAR_INTENT", confidence: 0.97, causalDensity: 8.5 });
       }
-    });
-
-    if (Math.abs(current.close - pocPrice) < rangeAvg * 0.2 && current.volume > volAvg * 1.5) {
-      tokens.push({
-        type: "STRUCTURAL_POC_RETEST",
-        confidence: 0.96,
-        causalDensity: 6.5
-      });
     }
 
-    // --- 3. VOLATILITY SQUEEZE (Spirit v2) ---
-    if (range < rangeAvg * 0.4 && current.volume < volAvg * 0.5) {
-      tokens.push({
-        type: "VOLATILITY_SQUEEZE_V2",
-        confidence: 0.91,
-        causalDensity: 4.8
-      });
-    }
-
-    // --- 4. CPCV & BAYESIAN CALIBRATION ---
+    // --- 5. CPCV & VOLATILITY SELF-SIMILARITY ---
     const synergyBonus = tokens.length >= 2 ? 2.1 : 1.0;
+    const fractalVol = (range / rangeAvg);
     const regimePrior = (regime === MarketRegime.BullishTrending || regime === MarketRegime.BearishTrending) ? 1.9 : 0.1;
 
-    let cbs = 0;
     tokens.forEach(t => {
-      t.causalDensity *= (synergyBonus * regimePrior);
+      // Self-similarity scaling: Penalize noise-induced tokens
+      const similarityScale = Math.exp(-Math.abs(fractalVol - 1.0));
+      t.causalDensity *= (synergyBonus * regimePrior * similarityScale);
       
-      // Path Metadata
       (t as any).pathId = `PATH_${Date.now()}`;
       (t as any).embargoBars = 20; 
       (t as any).recordedAt = history.length - 1;
-      (t as any).vYYMMDD_HHMM = "v26.0429.0830";
+      (t as any).vYYMMDD_HHMM = "v26.0429.2000";
     });
 
     return tokens;
   }
 
-  /**
-   * Validates tokens against Path-Based isolation rules.
-   */
   public static validatePath(tokens: FinancialToken[], currentBarIndex: number): FinancialToken[] {
     return tokens.filter(t => {
       const age = currentBarIndex - (t as any).recordedAt;
@@ -120,4 +126,4 @@ export class KronosTokenizer {
 }
 
 // Spirit Evolution Trace
-console.log("Kronos Replication Engine Evolved: Trajectory & POC Memory [v26.0429.0830]");
+console.log("Kronos Replication Engine Evolved: Liquidity Void & Volatility Self-Similarity [v26.0429.2000]");
