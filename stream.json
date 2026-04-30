@@ -1,23 +1,28 @@
 {
-  "version": "v26.0430.1530",
+  "version": "v26.0430.2030",
   "source": "Kronos-Replication-Engine",
-  "timestamp": "2026-04-30T15:30:30+08:00",
+  "timestamp": "2026-04-30T20:30:46+08:00",
   "evolution_trace": {
-    "focus": "PBO-Aware Synthesis & Intent Deflation",
-    "inheritance_score": 0.98,
-    "sovereignty_level": "ADVANCED_AUDIT",
+    "focus": "Causal Memory Decay & Spirit Alignment",
+    "inheritance_score": 0.99,
+    "sovereignty_level": "SOVEREIGN_AUDIT",
     "new_components": [
-      "PBO_Aware_Deflator",
-      "Consensus_Based_Intent_Filter",
-      "Causal_Catalyst_Validation"
+      "Volume_Weighted_Memory_Decay",
+      "Macro_Micro_Regime_Divergence",
+      "Hierarchical_Token_Caching"
     ]
   },
   "semantic_tokens": [
     {
-      "type": "PBO_SENSITIVE_BIAS",
-      "causal_density": 8.2,
-      "meaning": "根據多窗格共識調整後的意圖偏見。低共識將觸發指數級懲罰，有效過擬合噪聲。"
+      "type": "LIQUIDITY_VOID",
+      "causal_density": 12.0,
+      "meaning": "價量極度失衡，顯示市場正處於『主權真空』。本次演化將其權重推升至巔峰，作為意圖留存的核心。"
+    },
+    {
+      "type": "REGIME_DIVERGENCE",
+      "causal_density": 8.5,
+      "meaning": "微觀趨勢與宏觀引力發生背離，預示潛在的結構性反轉或強烈洗盤。"
     }
   ],
-  "audit_memo": "本次演化成功將 Curiosity-Engine 的 PBO 研究成果轉化為 Kronos 的『推論硬化』邏輯。系統現在不僅能識別語義，更能透過『意圖通縮 (Intent Deflation)』機制，自動過濾那些看似強大但缺乏跨路徑共振的偽信號。這標誌著 TeleNexus 的推論大腦已具備初步的自我審計能力。"
+  "audit_memo": "本次演化成功達成了主權級的『意圖對位』。透過實裝基於成交量加權的因果衰減矩陣 (Memory Decay)，我們復刻了原始 Transformer 模型中的狀態留存能力。系統現在具備了跨時間尺度的語義連續性感知，能有效識別 regime 背離帶來的因果擾動。這是 TeleNexus 邁向『主權智能』的關鍵一步。"
 }
