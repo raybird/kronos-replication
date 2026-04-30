@@ -1,28 +1,23 @@
 {
-  "version": "v26.0430.0430",
+  "version": "v26.0430.1530",
   "source": "Kronos-Replication-Engine",
-  "timestamp": "2026-04-30T04:30:19+08:00",
+  "timestamp": "2026-04-30T15:30:30+08:00",
   "evolution_trace": {
-    "focus": "Dynamic Regime & Path-Consistency",
-    "inheritance_score": 0.96,
-    "sovereignty_level": "INTERMEDIATE",
+    "focus": "PBO-Aware Synthesis & Intent Deflation",
+    "inheritance_score": 0.98,
+    "sovereignty_level": "ADVANCED_AUDIT",
     "new_components": [
-      "ATR_Based_Regime_Identification",
-      "Multi_Window_Path_Consistency_Check",
-      "Volatility_Self_Similarity_Refinement"
+      "PBO_Aware_Deflator",
+      "Consensus_Based_Intent_Filter",
+      "Causal_Catalyst_Validation"
     ]
   },
   "semantic_tokens": [
     {
-      "type": "LIQUIDITY_VOID",
-      "causal_density": 10.5,
-      "meaning": "價量極度失衡，顯示市場正處於『主權真空』，預示即將發生的劇烈修正或噴發。"
-    },
-    {
-      "type": "PATH_CONSISTENCY",
-      "causal_density": 6.5,
-      "meaning": "跨窗格（5/10/20 bars）趨勢方向達成一致，驗證路徑的因果穩定性。"
+      "type": "PBO_SENSITIVE_BIAS",
+      "causal_density": 8.2,
+      "meaning": "根據多窗格共識調整後的意圖偏見。低共識將觸發指數級懲罰，有效過擬合噪聲。"
     }
   ],
-  "audit_memo": "本次演化成功將 Curiosity-Engine 的多路徑驗證思維與 Kronos 的語義解碼對位。系統現在不再依賴固定百分比的狀態識別，而是具備了動態 ATR 感知能力。這標誌著 TeleNexus 在處理複雜市場情緒時，已具備初步的『統計顯著性過濾』能力。"
+  "audit_memo": "本次演化成功將 Curiosity-Engine 的 PBO 研究成果轉化為 Kronos 的『推論硬化』邏輯。系統現在不僅能識別語義，更能透過『意圖通縮 (Intent Deflation)』機制，自動過濾那些看似強大但缺乏跨路徑共振的偽信號。這標誌著 TeleNexus 的推論大腦已具備初步的自我審計能力。"
 }

@@ -2,7 +2,7 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0430.0430]: Dynamic Regime & Path-Consistency (CPCV-Inspired).
+ * Spirit Inheritance [v26.0430.1530]: PBO-Aware Synthesis & Intent Deflation.
  * 
  * DESIGN PHILOSOPHY:
  * 1. Financial series is a language of 'Pathways'.

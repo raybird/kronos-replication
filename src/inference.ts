@@ -2,14 +2,14 @@ import { FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosInference: The "Semantic Brain" that replaces the neural model.
- * Spirit Inheritance [v26.0426.0431]: Integrated Intent Persistence & Ghost Filtering.
+ * Spirit Inheritance [v26.0430.1530]: PBO-Aware Synthesis & Intent Deflation.
  */
 export class KronosInference {
   private static previousBias: number = 0;
 
   /**
    * Synthesizes tokens into a unified Causal Bias score (-1.0 to 1.0).
-   * Includes persistence auditing to filter out erratic "Ghost Intents".
+   * v2.0: Includes PBO-Aware deflation to filter out overfitted coincidences.
    */
   public static synthesize(tokens: FinancialToken[], regime: MarketRegime): number {
     if (tokens.length === 0) {
@@ -19,34 +19,42 @@ export class KronosInference {
 
     let score = 0;
     let totalCausalDensity = 0;
+    
+    // Track direction distribution to estimate PBO risk
+    const directions: number[] = [];
 
     tokens.forEach(token => {
       let multiplier = 1.0;
       
       // Attention Mechanism: Weighing tokens based on Regime
-      if (regime === MarketRegime.BullishTrending && token.type.includes("BULL")) multiplier = 1.6;
-      if (regime === MarketRegime.BearishTrending && token.type.includes("BEAR")) multiplier = 1.6;
-      if (regime === MarketRegime.HighVolatilityRange) multiplier = 0.5; // High noise penalty
+      if (regime === MarketRegime.BullishTrending && token.type.includes("BULL")) multiplier = 1.8;
+      if (regime === MarketRegime.BearishTrending && token.type.includes("BEAR")) multiplier = 1.8;
+      if (regime === MarketRegime.HighVolatilityRange) multiplier = 0.4; // High noise penalty
 
-      const contribution = token.type.includes("BULL") || token.type.includes("UP") ? 1 : -1;
+      const contribution = (token.type.includes("BULL") || token.type.includes("UP") || token.type.includes("EXPANSION")) ? 1 : -1;
       score += contribution * token.confidence * token.causalDensity * multiplier;
       totalCausalDensity += token.causalDensity;
+      directions.push(contribution);
     });
 
-    // Normalize raw score
     const currentBias = score / (totalCausalDensity || 1);
     
-    // --- Intent Persistence Check (v1.0) ---
+    // --- 1. PBO-AWARE DEFLATION (Curiosity Research v26.0430) ---
+    // If tokens show conflicting directions, it suggests high variance/overfitting risk.
+    const agreement = directions.filter(d => Math.sign(d) === Math.sign(currentBias)).length / directions.length;
+    const pboDeflator = Math.pow(agreement, 2.5); // Aggressive deflation for low consensus
+
+    // --- 2. Intent Persistence Check ---
     const biasDelta = Math.abs(currentBias - this.previousBias);
-    const hasCatalyst = tokens.some(t => t.type.includes("POLARIZATION") || t.type.includes("SURPRISE") || t.type.includes("BREAK"));
+    const hasCatalyst = tokens.some(t => t.type.includes("VOID") || t.type.includes("EXHAUSTION") || t.type.includes("TRAJECTORY"));
     
     let persistencePenalty = 1.0;
-    if (biasDelta > 1.0 && !hasCatalyst) {
-      persistencePenalty = 0.4; // Heavy penalty for erratic shifts lacking physical displacement
+    if (biasDelta > 1.2 && !hasCatalyst) {
+      persistencePenalty = 0.3; // Heavy penalty for sudden shifts without structural catalyst
     }
 
-    const finalScore = currentBias * persistencePenalty;
-    this.previousBias = finalScore; // Update memory for next bar
+    const finalScore = currentBias * pboDeflator * persistencePenalty;
+    this.previousBias = finalScore;
 
     return Math.max(-1, Math.min(1, finalScore));
   }
@@ -55,15 +63,16 @@ export class KronosInference {
    * Formulates a "Causal Intent Memo" for the LLM Brain to act upon.
    */
   public static generateIntentMemo(score: number, tokens: FinancialToken[]): string {
-    const direction = score > 0.4 ? "STRONGLY_BULLISH" : score > 0.15 ? "BULLISH" : 
-                    score < -0.4 ? "STRONGLY_BEARISH" : score < -0.15 ? "BEARISH" : "NEUTRAL";
+    const direction = score > 0.45 ? "STRONGLY_BULLISH" : score > 0.18 ? "BULLISH" : 
+                    score < -0.45 ? "STRONGLY_BEARISH" : score < -0.18 ? "BEARISH" : "NEUTRAL";
     
-    const consistency = Math.abs(score) > 0 ? "STABLE" : "FLUID";
+    const confidenceLevel = Math.abs(score) > 0.6 ? "SOVEREIGN" : Math.abs(score) > 0.3 ? "RELIABLE" : "SPECULATIVE";
 
-    return `[KRONOS_INFERENCE] 
+    return `[KRONOS_INFERENCE_v26.0430.1530] 
 Bias: ${direction} (${(score * 100).toFixed(2)}%)
-Consistency: ${consistency}
+Confidence: ${confidenceLevel}
 Active Evidence: ${tokens.map(t => t.type).join(", ")}
-Action: ${direction.startsWith("STRONG") ? "EXECUTE_IMMEDIATELY" : "MONITOR_FLOW"}`;
+Action: ${direction.startsWith("STRONG") ? "EXECUTE_HIGH_CONVICTION" : "WAIT_FOR_CONSENSUS"}`;
   }
 }
+
