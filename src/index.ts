@@ -2,17 +2,17 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0502.0430]: Structural Break & Entropy Drift.
+ * Spirit Inheritance [v26.0502.0445]: Cross-Scale Harmonic & Structural Mastery.
  * 
  * DESIGN PHILOSOPHY:
  * 1. Financial series is a language of 'Pathways'.
- * 2. Structural Stability = 1 / Σ|Entropy_Drift|.
- * 3. Sovereignty is achieved through identifying the precise moment of regime shift.
+ * 2. Harmonic Confluence = Harmonic_Ratio(Micro_Energy, Macro_Gravity).
+ * 3. Sovereignty is achieved through geometric alignment of intent across scales.
  */
 export class KronosTokenizer {
   private static tokenCache: FinancialToken[] = [];
   private static recursiveBias: number = 0;
-  private static cusumBuffer: number = 0; // Cumulative sum for structural break detection
+  private static cusumBuffer: number = 0;
 
   /**
    * Updates the internal recursive bias based on previous inference results.
@@ -32,7 +32,6 @@ export class KronosTokenizer {
     const meanReturn = returns.reduce((a, b) => a + b, 0) / 60;
     const stdReturn = Math.sqrt(returns.reduce((a, b) => a + Math.pow(b - meanReturn, 2), 0) / 60);
 
-    // CUSUM Filter: Capturing structural breaks in mean return
     const lastReturn = returns[returns.length - 1];
     this.cusumBuffer = Math.max(0, this.cusumBuffer + (lastReturn - meanReturn) - (stdReturn * 0.5));
     
@@ -40,9 +39,8 @@ export class KronosTokenizer {
     const ranges = lookback60.map(k => k.high - k.low);
     const atr = ranges.reduce((a, b) => a + b, 0) / 60;
 
-    // Structural Break Trigger
     if (this.cusumBuffer > stdReturn * 5.0) {
-       this.cusumBuffer = 0; // Reset after trigger
+       this.cusumBuffer = 0; 
        return macroMove > 0 ? MarketRegime.BullishTrending : MarketRegime.BearishTrending;
     }
 
@@ -52,7 +50,7 @@ export class KronosTokenizer {
   }
 
   /**
-   * Main tokenization logic implementing Structural Break & Entropy Drift.
+   * Main tokenization logic implementing Harmonic Resonance.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     let tokens: FinancialToken[] = [];
@@ -63,55 +61,54 @@ export class KronosTokenizer {
     const volAvg = history.slice(-100).reduce((a, b) => a + b.volume, 0) / 100;
     const rangeAvg = history.slice(-20).reduce((sum, k) => sum + (k.high - k.low), 0) / 20;
 
-    // --- 1. ENTROPY DRIFT DETECTION ---
+    // --- 1. HARMONIC RESONANCE (New v0445) ---
+    const microEnergy = (Math.abs(current.close - current.open) * current.volume) / (volAvg || 1);
+    const macroEnergy = history.slice(-50).reduce((s, k) => s + (Math.abs(k.close - k.open) * k.volume), 0) / 50;
+    const harmonicRatio = microEnergy / (macroEnergy || 1);
+
+    // Capture "Golden Mean" resonance or extreme energy transfer
+    if (harmonicRatio > 1.618 && harmonicRatio < 2.618) {
+      tokens.push({
+        type: "HARMONIC_RESONANCE_BULL",
+        confidence: 0.96,
+        causalDensity: 12.5
+      });
+    }
+
+    // --- 2. STRUCTURAL BREAK ENTROPY ---
     const localEntropy = history.slice(-5).reduce((s, k, i, arr) => i === 0 ? s : s + Math.abs(k.close - arr[i-1].close), 0) / 5;
     const macroEntropy = history.slice(-60).reduce((s, k, i, arr) => i === 0 ? s : s + Math.abs(k.close - arr[i-1].close), 0) / 60;
     const entropyDrift = localEntropy / (macroEntropy || 1);
 
-    if (entropyDrift > 2.8) {
+    if (entropyDrift > 3.0) {
       tokens.push({
-        type: "STRUCTURAL_BREAK_ENTROPY",
-        confidence: 0.98,
-        causalDensity: 20.0 // Highest Tier: Regime Shift Signal
+        type: "STRUCTURAL_MASTER_BREAK",
+        confidence: 0.99,
+        causalDensity: 25.0 // Peak Sovereignty
       });
     }
 
-    // --- 2. INTENT PERSISTENCE & DECAY ---
+    // --- 3. INTENT PERSISTENCE ---
     this.tokenCache = this.tokenCache.filter(t => {
       const age = history.length - 1 - (t as any).recordedAt;
-      const persistence = Math.exp(-age / 25); 
+      const persistence = Math.exp(-age / 30); // Deeper memory
       t.causalDensity *= persistence;
-      return t.causalDensity > 1.5;
+      return t.causalDensity > 2.0;
     });
     tokens = [...this.tokenCache, ...tokens];
 
-    // --- 3. RECURSIVE ALIGNMENT ---
+    // --- 4. FRACTAL & RECURSIVE SYNTHESIS ---
     const currentMove = Math.sign(current.close - current.open);
-    if (currentMove === Math.sign(this.recursiveBias) && Math.abs(this.recursiveBias) > 0.4) {
-      tokens.push({
-        type: `RECURSIVE_CONFIRMATION`,
-        confidence: 0.95,
-        causalDensity: 12.0
-      });
-    }
-
-    // --- 4. FRACTAL RESONANCE ---
-    const currentStructure = history.slice(-5).map(k => (k.close - k.open) / (k.high - k.low || 1));
-    const histBreakout = history.slice(-100, -10).find(k => k.volume > volAvg * 3.5);
-    if (histBreakout) {
-      const macroDNA = history.slice(history.indexOf(histBreakout), history.indexOf(histBreakout) + 5).map(k => (k.close - k.open) / (k.high - k.low || 1));
-      const dist = Math.sqrt(currentStructure.reduce((s, v, i) => s + Math.pow(v - (macroDNA[i] || 0), 2), 0));
-      if (dist < 0.28) {
-        tokens.push({ type: "FRACTAL_RESONANCE", confidence: 0.97, causalDensity: 15.5 });
-      }
+    if (currentMove === Math.sign(this.recursiveBias) && Math.abs(this.recursiveBias) > 0.5) {
+      tokens.push({ type: "RECURSIVE_SYNERGY", confidence: 0.94, causalDensity: 14.2 });
     }
 
     // --- FINAL POST-PROCESSING ---
-    const synergy = tokens.length >= 3 ? 2.8 : 1.0;
+    const synergy = tokens.length >= 4 ? 3.5 : tokens.length >= 2 ? 1.8 : 1.0;
     tokens.forEach(t => {
       if (!(t as any).recordedAt) {
         (t as any).recordedAt = history.length - 1;
-        (t as any).vYYMMDD_HHMM = "v26.0502.0430";
+        (t as any).vYYMMDD_HHMM = "v26.0502.0445";
         this.tokenCache.push(t);
       }
       t.causalDensity *= synergy;
@@ -121,12 +118,13 @@ export class KronosTokenizer {
   }
 
   public static validatePath(tokens: FinancialToken[], currentBarIndex: number): FinancialToken[] {
-    return tokens.filter(t => (currentBarIndex - (t as any).recordedAt) >= 18);
+    return tokens.filter(t => (currentBarIndex - (t as any).recordedAt) >= 20);
   }
 }
 
 // Spirit Evolution Trace
-console.log("Kronos Replication Engine Evolved: Structural Break Entropy [v26.0502.0430]");
+console.log("Kronos Replication Engine Evolved: Harmonic Resonance [v26.0502.0445]");
+
 
 
 
