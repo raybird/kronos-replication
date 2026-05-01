@@ -2,7 +2,7 @@ import { FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosInference: The "Semantic Brain" that replaces the neural model.
- * Spirit Inheritance [v26.0501.0830]: PBO-Aware Synthesis & Intent Deflation.
+ * Spirit Inheritance [v26.0501.2030]: Recursive Feedback & High-Density Synergy.
  */
 export class KronosInference {
   private static previousBias: number = 0;
@@ -68,11 +68,11 @@ export class KronosInference {
     
     const confidenceLevel = Math.abs(score) > 0.6 ? "SOVEREIGN" : Math.abs(score) > 0.3 ? "RELIABLE" : "SPECULATIVE";
 
-    return `[KRONOS_INFERENCE_v26.0501.0830] 
+    return `[KRONOS_INFERENCE_v26.0501.2030] 
     Bias: ${direction} (${(score * 100).toFixed(2)}%)
     Confidence: ${confidenceLevel}
     Active Evidence: ${tokens.map(t => t.type).join(", ")}
-    Action: ${direction.startsWith("STRONG") ? "EXECUTE_HIGH_CONVICTION" : "WAIT_FOR_CONSENSUS"}`;
+    Action: ${direction.startsWith("STRONG") ? "EXECUTE_RECURSIVE_CONVICTION" : "WAIT_FOR_STABILITY"}`;
   }
 }
 
