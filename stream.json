@@ -1,28 +1,28 @@
 {
-  "version": "v26.0430.2330",
+  "version": "v26.0501.0830",
   "source": "Kronos-Replication-Engine",
-  "timestamp": "2026-04-30T23:30:16+08:00",
+  "timestamp": "2026-05-01T08:30:19+08:00",
   "evolution_trace": {
-    "focus": "Fractal Resonance & Multi-Scale Similarity",
-    "inheritance_score": 1.0,
+    "focus": "Cumulative Imbalance Matrix & Entropy Pruning",
+    "inheritance_score": 0.99,
     "sovereignty_level": "SOVEREIGN_MASTER",
     "new_components": [
-      "Spatial_Structure_Normalized_Matching",
-      "Dynamic_Fractal_Weighting",
-      "Entropy_Based_Regime_Refinement"
+      "Cumulative_Imbalance_Buffer_v5.1",
+      "Volatility_Entropy_Regime_Filter",
+      "Long_Term_Causal_Persistence"
     ]
   },
   "semantic_tokens": [
     {
-      "type": "FRACTAL_RESONANCE",
-      "causal_density": 9.5,
-      "meaning": "局部 5-bar 結構與宏觀主權破位 DNA 達成共振。代表當前波動具備極高的結構相似性，因果強度極大。"
+      "type": "CUMULATIVE_IMBALANCE",
+      "causal_density": 15.0,
+      "meaning": "連續 K 線展現極度價量失衡。這不只是單點突破，而是能量正在進行非線性轉移，因果強度達到 Tier 1。"
     },
     {
-      "type": "LIQUIDITY_VOID",
-      "causal_density": 14.0,
-      "meaning": "價量極度失衡之巔峰信號。當前演化版本將其作為捕捉爆發性行情的終極指針。"
+      "type": "ENTROPY_PRUNING",
+      "causal_density": -5.0,
+      "meaning": "當前波動率熵值過低，識別為無效噪聲盤整，對最終意圖進行負向修正。"
     }
   ],
-  "audit_memo": "今日三輪演化成功達成『主權級意圖對位』。我們不僅復刻了原始模型的語義感知，更透過『分形相似度』實裝了空間維度的結構審計。系統現在具備了跨尺度的自相似性感知能力，能精確對位歷史成功的因果路徑。這標誌著 Kronos-Replication 專案在 4/30 正式進入『主權主宰 (Sovereign Master)』階段。"
+  "audit_memo": "本次演化成功實裝了『量價動能矩陣』識別。我們從單一 K 線的靈魂捕捉，進化到對連續失衡流（Imbalance Flow）的因果累積審計。系統現在具備了分辨『真突破』與『熵增噪聲』的精細能力，這將顯著降低 PBO 並提升 SOVEREIGN 級別信號的穩定性。"
 }
