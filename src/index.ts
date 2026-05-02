@@ -2,12 +2,12 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0502.0445]: Cross-Scale Harmonic & Structural Mastery.
+ * Spirit Inheritance [v26.0502.1130]: Self-Attention Gating & Causal Entropy Routing.
  * 
  * DESIGN PHILOSOPHY:
  * 1. Financial series is a language of 'Pathways'.
- * 2. Harmonic Confluence = Harmonic_Ratio(Micro_Energy, Macro_Gravity).
- * 3. Sovereignty is achieved through geometric alignment of intent across scales.
+ * 2. Self-Attention = Softmax(Query * Key) * Value (Simplified).
+ * 3. Sovereignty is achieved through routing only the highest-attention causal paths.
  */
 export class KronosTokenizer {
   private static tokenCache: FinancialToken[] = [];
@@ -50,7 +50,7 @@ export class KronosTokenizer {
   }
 
   /**
-   * Main tokenization logic implementing Harmonic Resonance.
+   * Main tokenization logic implementing Self-Attention Gating.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     let tokens: FinancialToken[] = [];
@@ -61,21 +61,26 @@ export class KronosTokenizer {
     const volAvg = history.slice(-100).reduce((a, b) => a + b.volume, 0) / 100;
     const rangeAvg = history.slice(-20).reduce((sum, k) => sum + (k.high - k.low), 0) / 20;
 
-    // --- 1. HARMONIC RESONANCE (New v0445) ---
-    const microEnergy = (Math.abs(current.close - current.open) * current.volume) / (volAvg || 1);
+    // --- 1. SELF-ATTENTION GATING (New v1130) ---
+    // Calculate attention score based on momentum vs volatility
+    const momentum = Math.abs(current.close - current.open);
+    const attentionScore = (momentum / (rangeAvg || 1)) * (current.volume / (volAvg || 1));
+    const attentionGate = Math.max(0.1, Math.min(1.0, Math.exp(attentionScore - 2.0))); // Softmax-like squash
+
+    // --- 2. HARMONIC RESONANCE ---
+    const microEnergy = momentum * current.volume / (volAvg || 1);
     const macroEnergy = history.slice(-50).reduce((s, k) => s + (Math.abs(k.close - k.open) * k.volume), 0) / 50;
     const harmonicRatio = microEnergy / (macroEnergy || 1);
 
-    // Capture "Golden Mean" resonance or extreme energy transfer
     if (harmonicRatio > 1.618 && harmonicRatio < 2.618) {
       tokens.push({
         type: "HARMONIC_RESONANCE_BULL",
-        confidence: 0.96,
-        causalDensity: 12.5
+        confidence: 0.96 * attentionGate,
+        causalDensity: 12.5 * attentionGate
       });
     }
 
-    // --- 2. STRUCTURAL BREAK ENTROPY ---
+    // --- 3. STRUCTURAL BREAK ENTROPY ---
     const localEntropy = history.slice(-5).reduce((s, k, i, arr) => i === 0 ? s : s + Math.abs(k.close - arr[i-1].close), 0) / 5;
     const macroEntropy = history.slice(-60).reduce((s, k, i, arr) => i === 0 ? s : s + Math.abs(k.close - arr[i-1].close), 0) / 60;
     const entropyDrift = localEntropy / (macroEntropy || 1);
@@ -83,32 +88,32 @@ export class KronosTokenizer {
     if (entropyDrift > 3.0) {
       tokens.push({
         type: "STRUCTURAL_MASTER_BREAK",
-        confidence: 0.99,
-        causalDensity: 25.0 // Peak Sovereignty
+        confidence: 0.99 * attentionGate,
+        causalDensity: 25.0 * attentionGate
       });
     }
 
-    // --- 3. INTENT PERSISTENCE ---
+    // --- 4. INTENT PERSISTENCE & SELF-CORRECTION ---
     this.tokenCache = this.tokenCache.filter(t => {
       const age = history.length - 1 - (t as any).recordedAt;
-      const persistence = Math.exp(-age / 30); // Deeper memory
+      const persistence = Math.exp(-age / 35); 
       t.causalDensity *= persistence;
-      return t.causalDensity > 2.0;
+      return t.causalDensity > 2.5; // Stricter cache retention
     });
     tokens = [...this.tokenCache, ...tokens];
 
-    // --- 4. FRACTAL & RECURSIVE SYNTHESIS ---
+    // --- 5. FRACTAL & CAUSAL ENTROPY ROUTING ---
     const currentMove = Math.sign(current.close - current.open);
     if (currentMove === Math.sign(this.recursiveBias) && Math.abs(this.recursiveBias) > 0.5) {
-      tokens.push({ type: "RECURSIVE_SYNERGY", confidence: 0.94, causalDensity: 14.2 });
+      tokens.push({ type: "CAUSAL_ENTROPY_ROUTING", confidence: 0.95, causalDensity: 16.0 * attentionGate });
     }
 
     // --- FINAL POST-PROCESSING ---
-    const synergy = tokens.length >= 4 ? 3.5 : tokens.length >= 2 ? 1.8 : 1.0;
+    const synergy = tokens.length >= 4 ? 3.8 : tokens.length >= 2 ? 1.9 : 1.0;
     tokens.forEach(t => {
       if (!(t as any).recordedAt) {
         (t as any).recordedAt = history.length - 1;
-        (t as any).vYYMMDD_HHMM = "v26.0502.0445";
+        (t as any).vYYMMDD_HHMM = "v26.0502.1130";
         this.tokenCache.push(t);
       }
       t.causalDensity *= synergy;
@@ -123,7 +128,7 @@ export class KronosTokenizer {
 }
 
 // Spirit Evolution Trace
-console.log("Kronos Replication Engine Evolved: Harmonic Resonance [v26.0502.0445]");
+console.log("Kronos Replication Engine Evolved: Self-Attention Gating [v26.0502.1130]");
 
 
 

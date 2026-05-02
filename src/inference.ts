@@ -2,7 +2,7 @@ import { FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosInference: The "Semantic Brain" that replaces the neural model.
- * Spirit Inheritance [v26.0502.0445]: Cross-Scale Harmonic Awareness & Sovereign Master Synthesis.
+ * Spirit Inheritance [v26.0502.1130]: Self-Attention Gating & Causal Entropy Routing.
  */
 export class KronosInference {
   private static previousBias: number = 0;
@@ -68,11 +68,11 @@ export class KronosInference {
     
     const confidenceLevel = Math.abs(score) > 0.6 ? "SOVEREIGN" : Math.abs(score) > 0.3 ? "RELIABLE" : "SPECULATIVE";
 
-    return `[KRONOS_INFERENCE_v26.0502.0445] 
+    return `[KRONOS_INFERENCE_v26.0502.1130] 
     Bias: ${direction} (${(score * 100).toFixed(2)}%)
     Confidence: ${confidenceLevel}
     Active Evidence: ${tokens.map(t => t.type).join(", ")}
-    Action: ${direction.startsWith("STRONG") ? "EXECUTE_HARMONIC_CONVICTION" : "WAIT_FOR_SCALE_RESONANCE"}`;
+    Action: ${direction.startsWith("STRONG") ? "EXECUTE_ATTENTION_GATED_CONVICTION" : "WAIT_FOR_CAUSAL_ENTROPY_ROUTING"}`;
   }
 }
 
