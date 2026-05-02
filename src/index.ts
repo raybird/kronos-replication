@@ -2,18 +2,18 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0502.1530]: Symmetric CUSUM & Structural Regime Break.
+ * Spirit Inheritance [v26.0502.2030]: Sharpe Ratio Deflation & Statistical Gating.
  * 
  * DESIGN PHILOSOPHY:
  * 1. Financial series is a language of 'Pathways'.
- * 2. Regime Shift = CUSUM_Trigger(Returns) * Attention_Lock.
- * 3. Sovereignty is achieved through identifying the precise moment of Causal Re-anchoring.
+ * 2. Statistical Purity = (Raw_Density * DSR_Adjustment) / sqrt(Time).
+ * 3. Sovereignty is achieved through pruning 'Luck' from Causal Intent.
  */
 export class KronosTokenizer {
   private static tokenCache: FinancialToken[] = [];
   private static recursiveBias: number = 0;
-  private static sPos: number = 0; // Positive CUSUM Sum
-  private static sNeg: number = 0; // Negative CUSUM Sum
+  private static sPos: number = 0; 
+  private static sNeg: number = 0; 
 
   /**
    * Updates the internal recursive bias based on previous inference results.
@@ -33,7 +33,6 @@ export class KronosTokenizer {
     const meanReturn = returns.reduce((a, b) => a + b, 0) / 60;
     const stdReturn = Math.sqrt(returns.reduce((a, b) => a + Math.pow(b - meanReturn, 2), 0) / 60) || 0.001;
 
-    // --- SYMMETRIC CUSUM FILTER (Curiosity Research v1330) ---
     const lastReturn = returns[returns.length - 1];
     const diff = lastReturn - meanReturn;
     this.sPos = Math.max(0, this.sPos + diff - (stdReturn * 0.5));
@@ -46,7 +45,7 @@ export class KronosTokenizer {
     const atr = lookback60.reduce((s, k) => s + (k.high - k.low), 0) / 60;
 
     if (isBreak) {
-       this.sPos = 0; this.sNeg = 0; // Reset
+       this.sPos = 0; this.sNeg = 0; 
        return macroMove > 0 ? MarketRegime.BullishTrending : MarketRegime.BearishTrending;
     }
 
@@ -56,7 +55,7 @@ export class KronosTokenizer {
   }
 
   /**
-   * Main tokenization logic implementing CUSUM Awareness.
+   * Main tokenization logic implementing Statistical Gating.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     let tokens: FinancialToken[] = [];
@@ -67,33 +66,39 @@ export class KronosTokenizer {
     const volAvg = history.slice(-100).reduce((a, b) => a + b.volume, 0) / 100;
     const rangeAvg = history.slice(-20).reduce((sum, k) => sum + (k.high - k.low), 0) / 20;
 
-    // --- 1. CUSUM STRUCTURAL BREAK TOKEN ---
-    // If CUSUM just triggered, we lock attention at peak and emit Tier 1 token
-    const isCusumActive = this.sPos === 0 && this.sNeg === 0; // Just reset in identifyRegime
-    let attentionGate = 1.0; 
+    // --- 1. SHARPE RATIO DEFLATION GATE (Curiosity Research v26.0501) ---
+    // Prune tokens that appear in 'too easy' (high SR, low entropy) environments
+    const recentReturns = history.slice(-20).map((k, i, arr) => i === 0 ? 0 : (k.close - arr[i-1].close) / arr[i-1].close);
+    const avgRet = recentReturns.reduce((a, b) => a + b, 0) / 20;
+    const stdRet = Math.sqrt(recentReturns.reduce((a, b) => a + Math.pow(b - avgRet, 2), 0) / 20) || 0.001;
+    const localSR = (avgRet / stdRet) * Math.sqrt(252); // Annualized
 
-    if (isCusumActive && Math.abs(current.close - current.open) > rangeAvg * 1.5) {
-      tokens.push({
-        type: "STRUCTURAL_REGIME_BREAK",
-        confidence: 1.0, // Forced Attention Lock
-        causalDensity: 30.0 // Peak Sovereignty Signal
-      });
-    } else {
-      const momentum = Math.abs(current.close - current.open);
-      const attentionScore = (momentum / (rangeAvg || 1)) * (current.volume / (volAvg || 1));
-      attentionGate = Math.max(0.15, Math.min(1.0, Math.exp(attentionScore - 1.8)));
-    }
+    const localEntropy = history.slice(-5).reduce((s, k, i, arr) => i === 0 ? s : s + Math.abs(k.close - arr[i-1].close), 0) / 5;
+    const macroEntropy = history.slice(-60).reduce((s, k, i, arr) => i === 0 ? s : s + Math.abs(k.close - arr[i-1].close), 0) / 60;
+    const entropyRatio = localEntropy / (macroEntropy || 1);
+
+    // If SR is abnormally high while entropy is low, it's likely luck.
+    const dsrDeflator = (localSR > 4.5 && entropyRatio < 1.2) ? 0.4 : 1.0;
 
     // --- 2. INTENT PERSISTENCE ---
     this.tokenCache = this.tokenCache.filter(t => {
       const age = history.length - 1 - (t as any).recordedAt;
-      const persistence = Math.exp(-age / 40); 
-      t.causalDensity *= persistence;
-      return t.causalDensity > 3.0;
+      const persistence = Math.exp(-age / 45); 
+      t.causalDensity *= (persistence * dsrDeflator);
+      return t.causalDensity > 3.5;
     });
-    tokens = [...this.tokenCache, ...tokens];
+    tokens = [...this.tokenCache];
 
-    // --- 3. HARMONIC & RECURSIVE ALIGNMENT ---
+    // --- 3. CUSUM & HARMONIC RESONANCE ---
+    const isCusumActive = this.sPos === 0 && this.sNeg === 0;
+    if (isCusumActive && Math.abs(current.close - current.open) > rangeAvg * 1.8) {
+      tokens.push({
+        type: "STRUCTURAL_REGIME_BREAK",
+        confidence: 1.0,
+        causalDensity: 35.0 * dsrDeflator // Peak Intent
+      });
+    }
+
     const microEnergy = Math.abs(current.close - current.open) * current.volume / (volAvg || 1);
     const macroEnergy = history.slice(-50).reduce((s, k) => s + (Math.abs(k.close - k.open) * k.volume), 0) / 50;
     const harmonicRatio = microEnergy / (macroEnergy || 1);
@@ -101,17 +106,17 @@ export class KronosTokenizer {
     if (harmonicRatio > 1.618 && harmonicRatio < 2.618) {
       tokens.push({
         type: "HARMONIC_RESONANCE",
-        confidence: 0.96 * attentionGate,
-        causalDensity: 15.0 * attentionGate
+        confidence: 0.96 * dsrDeflator,
+        causalDensity: 18.0 * dsrDeflator
       });
     }
 
     // --- FINAL POST-PROCESSING ---
-    const synergy = tokens.length >= 4 ? 4.0 : tokens.length >= 2 ? 2.0 : 1.0;
+    const synergy = tokens.length >= 4 ? 4.5 : tokens.length >= 2 ? 2.5 : 1.0;
     tokens.forEach(t => {
       if (!(t as any).recordedAt) {
         (t as any).recordedAt = history.length - 1;
-        (t as any).vYYMMDD_HHMM = "v26.0502.1530";
+        (t as any).vYYMMDD_HHMM = "v26.0502.2030";
         this.tokenCache.push(t);
       }
       t.causalDensity *= synergy;
@@ -126,7 +131,8 @@ export class KronosTokenizer {
 }
 
 // Spirit Evolution Trace
-console.log("Kronos Replication Engine Evolved: Symmetric CUSUM [v26.0502.1530]");
+console.log("Kronos Replication Engine Evolved: SR Deflation Gating [v26.0502.2030]");
+
 
 
 
