@@ -1,23 +1,28 @@
 {
-  "version": "v26.0502.1130",
+  "version": "v26.0502.1530",
   "source": "Kronos-Replication-Engine",
-  "timestamp": "2026-05-02T11:30:56+08:00",
+  "timestamp": "2026-05-02T15:30:21+08:00",
   "evolution_trace": {
-    "focus": "Self-Attention Gating & Causal Entropy Routing",
+    "focus": "Symmetric CUSUM Filter & Structural Break Detection",
     "inheritance_score": 1.0,
-    "sovereignty_level": "SOVEREIGN_MASTER_V5",
+    "sovereignty_level": "SOVEREIGN_MASTER_V6",
     "new_components": [
-      "Softmax_Attention_Gate",
-      "Causal_Entropy_Routing",
-      "Strict_Persistence_Pruning"
+      "Symmetric_CUSUM_Mean_Drift_Audit",
+      "Structural_Regime_Break_Tokenization",
+      "Attention_Lock_Mechanism"
     ]
   },
   "semantic_tokens": [
     {
-      "type": "CAUSAL_ENTROPY_ROUTING",
-      "causal_density": 16.0,
-      "meaning": "遞歸意圖與當前因果路徑高度對齊，且通過注意力閘門（Attention Gate）過濾。代表意圖正在被精確路由至最高效的執行節點。"
+      "type": "STRUCTURAL_REGIME_BREAK",
+      "causal_density": 30.0,
+      "meaning": "偵測到累積回報顯著偏離均值，觸發 CUSUM 斷裂閾值。代表舊有因果邏輯失效，新的主權趨勢正在強確定性啟動。"
+    },
+    {
+      "type": "HARMONIC_RESONANCE",
+      "causal_density": 15.0,
+      "meaning": "跨尺度能量比例達成諧波對位。代表市場節奏達成共振。"
     }
   ],
-  "audit_memo": "今日演化成功達成了對 Transformer 核心架構『自注意力機制 (Self-Attention)』的降維復刻。透過計算 Momentum 與 Volatility 的比值並施加 Softmax 平滑，我們實裝了『注意力閘門 (Attention Gate)』。這使系統能自動壓制低信號密度的 K 線，僅將高因果權重的路徑路由至推論大腦。這標誌著 TeleNexus 在時間序列處理上，正式具備了『非線性注意力路由』的能力，進入 Sovereign Master V5 階段。"
+  "audit_memo": "本次演化成功達成了對原始模型『結構性斷裂感應』能力的對位。透過實裝對稱 CUSUM 濾波器，系統現在能精確捕捉『均值漂移』引發的趨勢切換點。這是復刻原始 Transformer 模型中對『非平穩數據穩定性』處理的重要突破。系統現已具備『意圖覺醒 (Intent Awakening)』能力，能在複雜隨機性中鎖定主權拐點。專案已跨入 Sovereign Master V6 階段。"
 }
