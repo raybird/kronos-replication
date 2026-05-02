@@ -2,12 +2,12 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0502.2030]: Sharpe Ratio Deflation & Statistical Gating.
+ * Spirit Inheritance [v26.0503.0430]: Asymmetric Information Transfer & Causal Entanglement.
  * 
  * DESIGN PHILOSOPHY:
  * 1. Financial series is a language of 'Pathways'.
- * 2. Statistical Purity = (Raw_Density * DSR_Adjustment) / sqrt(Time).
- * 3. Sovereignty is achieved through pruning 'Luck' from Causal Intent.
+ * 2. Information Transfer (AIT) = f(Volume_Lead, Price_Lag).
+ * 3. Sovereignty is achieved through identifying the entanglement of divergent intents.
  */
 export class KronosTokenizer {
   private static tokenCache: FinancialToken[] = [];
@@ -15,19 +15,12 @@ export class KronosTokenizer {
   private static sPos: number = 0; 
   private static sNeg: number = 0; 
 
-  /**
-   * Updates the internal recursive bias based on previous inference results.
-   */
   public static setRecursiveBias(bias: number) {
     this.recursiveBias = bias;
   }
 
-  /**
-   * Identifies the current Market Regime using Symmetric CUSUM logic.
-   */
   public static identifyRegime(history: Kline[]): MarketRegime {
     if (history.length < 60) return MarketRegime.LowVolatilityRange;
-
     const lookback60 = history.slice(-60);
     const returns = lookback60.map((k, i, arr) => i === 0 ? 0 : (k.close - arr[i-1].close) / arr[i-1].close);
     const meanReturn = returns.reduce((a, b) => a + b, 0) / 60;
@@ -40,7 +33,6 @@ export class KronosTokenizer {
     
     const threshold = stdReturn * 5.0;
     const isBreak = this.sPos > threshold || Math.abs(this.sNeg) > threshold;
-
     const macroMove = (history[history.length-1].close - history[history.length-60].close);
     const atr = lookback60.reduce((s, k) => s + (k.high - k.low), 0) / 60;
 
@@ -48,14 +40,12 @@ export class KronosTokenizer {
        this.sPos = 0; this.sNeg = 0; 
        return macroMove > 0 ? MarketRegime.BullishTrending : MarketRegime.BearishTrending;
     }
-
     if (Math.abs(macroMove) > atr * 5.0) return macroMove > 0 ? MarketRegime.BullishTrending : MarketRegime.BearishTrending;
-    
     return MarketRegime.LowVolatilityRange;
   }
 
   /**
-   * Main tokenization logic implementing Statistical Gating.
+   * Main tokenization logic implementing AIT and Causal Entanglement.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     let tokens: FinancialToken[] = [];
@@ -66,57 +56,53 @@ export class KronosTokenizer {
     const volAvg = history.slice(-100).reduce((a, b) => a + b.volume, 0) / 100;
     const rangeAvg = history.slice(-20).reduce((sum, k) => sum + (k.high - k.low), 0) / 20;
 
-    // --- 1. SHARPE RATIO DEFLATION GATE (Curiosity Research v26.0501) ---
-    // Prune tokens that appear in 'too easy' (high SR, low entropy) environments
-    const recentReturns = history.slice(-20).map((k, i, arr) => i === 0 ? 0 : (k.close - arr[i-1].close) / arr[i-1].close);
-    const avgRet = recentReturns.reduce((a, b) => a + b, 0) / 20;
-    const stdRet = Math.sqrt(recentReturns.reduce((a, b) => a + Math.pow(b - avgRet, 2), 0) / 20) || 0.001;
-    const localSR = (avgRet / stdRet) * Math.sqrt(252); // Annualized
+    // --- 1. ASYMMETRIC INFORMATION TRANSFER (AIT) (New v0430) ---
+    // Identify if volume surge leads price movement (True Institutional Driving)
+    const priceAccel = (current.close - current.open) / (history[history.length-2].close - history[history.length-2].open || 1);
+    const volumeAccel = current.volume / (history[history.length-2].volume || 1);
+    const aitScore = volumeAccel / (Math.abs(priceAccel) + 0.1);
 
-    const localEntropy = history.slice(-5).reduce((s, k, i, arr) => i === 0 ? s : s + Math.abs(k.close - arr[i-1].close), 0) / 5;
-    const macroEntropy = history.slice(-60).reduce((s, k, i, arr) => i === 0 ? s : s + Math.abs(k.close - arr[i-1].close), 0) / 60;
-    const entropyRatio = localEntropy / (macroEntropy || 1);
-
-    // If SR is abnormally high while entropy is low, it's likely luck.
-    const dsrDeflator = (localSR > 4.5 && entropyRatio < 1.2) ? 0.4 : 1.0;
-
-    // --- 2. INTENT PERSISTENCE ---
-    this.tokenCache = this.tokenCache.filter(t => {
-      const age = history.length - 1 - (t as any).recordedAt;
-      const persistence = Math.exp(-age / 45); 
-      t.causalDensity *= (persistence * dsrDeflator);
-      return t.causalDensity > 3.5;
-    });
-    tokens = [...this.tokenCache];
-
-    // --- 3. CUSUM & HARMONIC RESONANCE ---
-    const isCusumActive = this.sPos === 0 && this.sNeg === 0;
-    if (isCusumActive && Math.abs(current.close - current.open) > rangeAvg * 1.8) {
+    if (aitScore > 2.5 && current.volume > volAvg * 1.5) {
       tokens.push({
-        type: "STRUCTURAL_REGIME_BREAK",
-        confidence: 1.0,
-        causalDensity: 35.0 * dsrDeflator // Peak Intent
+        type: "ASYMMETRIC_INFO_TRANSFER",
+        confidence: 0.98,
+        causalDensity: 22.0 // Volume is driving price with high efficiency
       });
     }
 
-    const microEnergy = Math.abs(current.close - current.open) * current.volume / (volAvg || 1);
-    const macroEnergy = history.slice(-50).reduce((s, k) => s + (Math.abs(k.close - k.open) * k.volume), 0) / 50;
-    const harmonicRatio = microEnergy / (macroEnergy || 1);
+    // --- 2. STATISTICAL GATING (DSR) ---
+    const recentReturns = history.slice(-20).map((k, i, arr) => i === 0 ? 0 : (k.close - arr[i-1].close) / arr[i-1].close);
+    const avgRet = recentReturns.reduce((a, b) => a + b, 0) / 20;
+    const stdRet = Math.sqrt(recentReturns.reduce((a, b) => a + Math.pow(b - avgRet, 2), 0) / 20) || 0.001;
+    const localSR = (avgRet / stdRet) * Math.sqrt(252);
+    const dsrDeflator = localSR > 4.5 ? 0.5 : 1.0;
 
-    if (harmonicRatio > 1.618 && harmonicRatio < 2.618) {
+    // --- 3. INTENT PERSISTENCE ---
+    this.tokenCache = this.tokenCache.filter(t => {
+      const age = history.length - 1 - (t as any).recordedAt;
+      const persistence = Math.exp(-age / 50); // Deeper spirit retention
+      t.causalDensity *= (persistence * dsrDeflator);
+      return t.causalDensity > 4.0;
+    });
+    tokens = [...this.tokenCache, ...tokens];
+
+    // --- 4. CAUSAL ENTANGLEMENT (Non-linear Synergy) ---
+    const hasAIT = tokens.some(t => t.type === "ASYMMETRIC_INFO_TRANSFER");
+    const isBreak = this.sPos === 0 && this.sNeg === 0;
+    if (hasAIT && isBreak) {
       tokens.push({
-        type: "HARMONIC_RESONANCE",
-        confidence: 0.96 * dsrDeflator,
-        causalDensity: 18.0 * dsrDeflator
+        type: "CAUSAL_ENTANGLEMENT_MASTER",
+        confidence: 1.0,
+        causalDensity: 40.0 // Ultimate Sovereignty: Break driven by AIT
       });
     }
 
     // --- FINAL POST-PROCESSING ---
-    const synergy = tokens.length >= 4 ? 4.5 : tokens.length >= 2 ? 2.5 : 1.0;
+    const synergy = tokens.length >= 3 ? 3.0 : 1.0;
     tokens.forEach(t => {
       if (!(t as any).recordedAt) {
         (t as any).recordedAt = history.length - 1;
-        (t as any).vYYMMDD_HHMM = "v26.0502.2030";
+        (t as any).vYYMMDD_HHMM = "v26.0503.0430";
         this.tokenCache.push(t);
       }
       t.causalDensity *= synergy;
@@ -126,12 +112,13 @@ export class KronosTokenizer {
   }
 
   public static validatePath(tokens: FinancialToken[], currentBarIndex: number): FinancialToken[] {
-    return tokens.filter(t => (currentBarIndex - (t as any).recordedAt) >= 20);
+    return tokens.filter(t => (currentBarIndex - (t as any).recordedAt) >= 25);
   }
 }
 
 // Spirit Evolution Trace
-console.log("Kronos Replication Engine Evolved: SR Deflation Gating [v26.0502.2030]");
+console.log("Kronos Replication Engine Evolved: Asymmetric Info Transfer [v26.0503.0430]");
+
 
 
 
