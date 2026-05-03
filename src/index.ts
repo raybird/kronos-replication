@@ -2,18 +2,20 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0503.1530]: Sentiment Entropy & Non-linear Energy Transfer.
+ * Spirit Inheritance [v26.0504.0430]: Information Bottleneck & Confidence Self-Correction.
  * 
  * DESIGN PHILOSOPHY:
  * 1. Financial series is a language of 'Pathways'.
- * 2. Energy Transfer = (Momentum / Entropy) * sqrt(Volume_Stability).
- * 3. Sovereignty is achieved through identifying ordered intent in chaotic regimes.
+ * 2. Information Bottleneck = min(Entropy) s.t. max(Predictive_Power).
+ * 3. Sovereignty is achieved through aggressive pruning of high-entropy noise.
  */
 export class KronosTokenizer {
   private static tokenCache: FinancialToken[] = [];
   private static recursiveBias: number = 0;
   private static sPos: number = 0; 
   private static sNeg: number = 0; 
+  private static reputationMatrix: Map<string, number> = new Map();
+  private static biasDivergenceCount: number = 0; // Track bias vs actual divergence
 
   public static setRecursiveBias(bias: number) {
     this.recursiveBias = bias;
@@ -40,12 +42,12 @@ export class KronosTokenizer {
        this.sPos = 0; this.sNeg = 0; 
        return macroMove > 0 ? MarketRegime.BullishTrending : MarketRegime.BearishTrending;
     }
-    if (Math.abs(macroMove) > atr * 5.0) return macroMove > 0 ? MarketRegime.BullishTrending : MarketRegime.BearishTrending;
+    if (Math.abs(macroMove) > atr * 5.8) return macroMove > 0 ? MarketRegime.BullishTrending : MarketRegime.BearishTrending;
     return MarketRegime.LowVolatilityRange;
   }
 
   /**
-   * Main tokenization logic implementing Sentiment Entropy & Energy Transfer.
+   * Main tokenization logic implementing Bottleneck Pruning.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     let tokens: FinancialToken[] = [];
@@ -56,56 +58,45 @@ export class KronosTokenizer {
     const volAvg = history.slice(-100).reduce((a, b) => a + b.volume, 0) / 100;
     const rangeAvg = history.slice(-20).reduce((sum, k) => sum + (k.high - k.low), 0) / 20;
 
-    // --- 1. SENTIMENT ENTROPY AUDIT (New v1530) ---
-    // Measure the "orderliness" of price action relative to volume
-    const localReturns = history.slice(-10).map(k => Math.abs(k.close - k.open) / (k.high - k.low || 1));
-    const entropy = localReturns.reduce((s, r) => s + (r * Math.log(r + 0.001)), 0) / -10;
-    
-    if (entropy < 0.18 && Math.abs(current.close - current.open) > rangeAvg * 1.2) {
-      tokens.push({
-        type: "SENTIMENT_ORDER_BULL",
-        confidence: 0.95,
-        causalDensity: 14.5 // Intent is highly ordered and efficient
-      });
+    // --- 1. CONFIDENCE SELF-CORRECTION (New v0430) ---
+    const actualMove = Math.sign(current.close - current.open);
+    if (this.recursiveBias !== 0 && actualMove !== Math.sign(this.recursiveBias)) {
+      this.biasDivergenceCount++;
+    } else {
+      this.biasDivergenceCount = 0;
     }
+    const correctionFactor = this.biasDivergenceCount >= 2 ? 0.6 : 1.0;
 
-    // --- 2. NON-LINEAR ENERGY TRANSFER ---
-    const momentum = Math.abs(current.close - current.open);
-    const volumeEfficiency = momentum / (current.volume / volAvg || 1);
-    if (volumeEfficiency > rangeAvg * 2.8 && current.volume < volAvg * 1.2) {
-      tokens.push({
-        type: "ENERGY_ACCUMULATION",
-        confidence: 0.92,
-        causalDensity: 19.0 // Potential energy stored for next displacement
-      });
-    }
+    // --- 2. INFORMATION BOTTLENECK PRUNING ---
+    // Prune tokens with low signal-to-noise ratio (SNR)
+    const snr = (Math.abs(current.close - current.open) / (rangeAvg || 1)) * correctionFactor;
+    const isGated = snr < 0.25;
 
-    // --- 3. VOLATILITY PERSISTENCE & INTENT PERSISTENCE ---
+    // --- 3. RECURSIVE REPUTATION & PERSISTENCE ---
     this.tokenCache = this.tokenCache.filter(t => {
       const age = history.length - 1 - (t as any).recordedAt;
-      const persistence = Math.exp(-age / 60); 
-      t.causalDensity *= persistence;
-      return t.causalDensity > 6.0; // Higher survival threshold for V9
+      const rep = this.reputationMatrix.get(t.type) || 1.0;
+      const persistence = Math.exp(-age / (70 * rep)); 
+      t.causalDensity *= (persistence * correctionFactor);
+      return t.causalDensity > 8.0; // Higher Tier for V11
     });
-    tokens = [...this.tokenCache, ...tokens];
+    tokens = [...this.tokenCache];
 
-    // --- 4. ULTIMATE CAUSAL ENTANGLEMENT ---
-    const hasOrder = tokens.some(t => t.type === "SENTIMENT_ORDER_BULL");
-    const hasEnergy = tokens.some(t => t.type === "ENERGY_ACCUMULATION");
-    if (hasOrder && hasEnergy) {
+    // --- 4. BOTTLENECK OPTIMIZED INTENT ---
+    if (!isGated && Math.abs(current.close - current.open) > rangeAvg * 2.0) {
       tokens.push({
-        type: "CAUSAL_ENTANGLEMENT_MASTER",
-        confidence: 1.0,
-        causalDensity: 50.0 // Peak Sovereignty: Ordered energy accumulation
+        type: "BOTTLENECK_OPTIMIZED_INTENT",
+        confidence: 0.96 * correctionFactor,
+        causalDensity: 28.0 // Peak Efficiency
       });
     }
 
     // --- FINAL POST-PROCESSING ---
-    const synergy = tokens.length >= 3 ? 4.0 : 1.0;
+    const synergy = tokens.length >= 3 ? 5.0 : 1.0;
     tokens.forEach(t => {
       if (!(t as any).recordedAt) {
         (t as any).recordedAt = history.length - 1;
-        (t as any).vYYMMDD_HHMM = "v26.0503.1530";
+        (t as any).vYYMMDD_HHMM = "v26.0504.0430";
         this.tokenCache.push(t);
       }
       t.causalDensity *= synergy;
@@ -115,12 +106,14 @@ export class KronosTokenizer {
   }
 
   public static validatePath(tokens: FinancialToken[], currentBarIndex: number): FinancialToken[] {
-    return tokens.filter(t => (currentBarIndex - (t as any).recordedAt) >= 30);
+    return tokens.filter(t => (currentBarIndex - (t as any).recordedAt) >= 40);
   }
 }
 
 // Spirit Evolution Trace
-console.log("Kronos Replication Engine Evolved: Sentiment Order [v26.0503.1530]");
+console.log("Kronos Replication Engine Evolved: Information Bottleneck [v26.0504.0430]");
+
+
 
 
 
