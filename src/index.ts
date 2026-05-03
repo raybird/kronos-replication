@@ -2,12 +2,12 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0503.0430]: Asymmetric Information Transfer & Causal Entanglement.
+ * Spirit Inheritance [v26.0503.0830]: Volatility Clustering & Causal Persistence.
  * 
  * DESIGN PHILOSOPHY:
  * 1. Financial series is a language of 'Pathways'.
- * 2. Information Transfer (AIT) = f(Volume_Lead, Price_Lag).
- * 3. Sovereignty is achieved through identifying the entanglement of divergent intents.
+ * 2. Causal Persistence = Autocorrelation(Volatility) * Evidence_Density.
+ * 3. Sovereignty is achieved through identifying the clusters of high-intent energy.
  */
 export class KronosTokenizer {
   private static tokenCache: FinancialToken[] = [];
@@ -45,7 +45,7 @@ export class KronosTokenizer {
   }
 
   /**
-   * Main tokenization logic implementing AIT and Causal Entanglement.
+   * Main tokenization logic implementing Volatility Clustering.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     let tokens: FinancialToken[] = [];
@@ -56,53 +56,59 @@ export class KronosTokenizer {
     const volAvg = history.slice(-100).reduce((a, b) => a + b.volume, 0) / 100;
     const rangeAvg = history.slice(-20).reduce((sum, k) => sum + (k.high - k.low), 0) / 20;
 
-    // --- 1. ASYMMETRIC INFORMATION TRANSFER (AIT) (New v0430) ---
-    // Identify if volume surge leads price movement (True Institutional Driving)
+    // --- 1. VOLATILITY CLUSTERING CAUSALITY (New v0830) ---
+    // Identify if current volatility spike is part of a persistent cluster (GARCH-like)
+    const recentAtrs = history.slice(-20).map((k, i, arr) => i === 0 ? 0 : Math.abs(k.high - k.low));
+    const volVolatility = Math.sqrt(recentAtrs.reduce((s, v) => s + Math.pow(v - rangeAvg, 2), 0) / 20);
+    const volPersistence = (rangeAvg / (volVolatility || 1));
+
+    if (volPersistence > 2.0 && Math.abs(current.close - current.open) > rangeAvg * 1.5) {
+      tokens.push({
+        type: "VOLATILITY_PERSISTENCE",
+        confidence: 0.94,
+        causalDensity: 16.5 // High stability multiplier
+      });
+    }
+
+    // --- 2. ASYMMETRIC INFORMATION TRANSFER (AIT) ---
     const priceAccel = (current.close - current.open) / (history[history.length-2].close - history[history.length-2].open || 1);
     const volumeAccel = current.volume / (history[history.length-2].volume || 1);
     const aitScore = volumeAccel / (Math.abs(priceAccel) + 0.1);
 
-    if (aitScore > 2.5 && current.volume > volAvg * 1.5) {
+    if (aitScore > 2.8 && current.volume > volAvg * 1.6) {
       tokens.push({
         type: "ASYMMETRIC_INFO_TRANSFER",
         confidence: 0.98,
-        causalDensity: 22.0 // Volume is driving price with high efficiency
+        causalDensity: 24.0
       });
     }
-
-    // --- 2. STATISTICAL GATING (DSR) ---
-    const recentReturns = history.slice(-20).map((k, i, arr) => i === 0 ? 0 : (k.close - arr[i-1].close) / arr[i-1].close);
-    const avgRet = recentReturns.reduce((a, b) => a + b, 0) / 20;
-    const stdRet = Math.sqrt(recentReturns.reduce((a, b) => a + Math.pow(b - avgRet, 2), 0) / 20) || 0.001;
-    const localSR = (avgRet / stdRet) * Math.sqrt(252);
-    const dsrDeflator = localSR > 4.5 ? 0.5 : 1.0;
 
     // --- 3. INTENT PERSISTENCE ---
     this.tokenCache = this.tokenCache.filter(t => {
       const age = history.length - 1 - (t as any).recordedAt;
-      const persistence = Math.exp(-age / 50); // Deeper spirit retention
-      t.causalDensity *= (persistence * dsrDeflator);
-      return t.causalDensity > 4.0;
+      const persistence = Math.exp(-age / 55); 
+      t.causalDensity *= persistence;
+      return t.causalDensity > 5.0;
     });
     tokens = [...this.tokenCache, ...tokens];
 
     // --- 4. CAUSAL ENTANGLEMENT (Non-linear Synergy) ---
     const hasAIT = tokens.some(t => t.type === "ASYMMETRIC_INFO_TRANSFER");
-    const isBreak = this.sPos === 0 && this.sNeg === 0;
-    if (hasAIT && isBreak) {
+    const hasPersistence = tokens.some(t => t.type === "VOLATILITY_PERSISTENCE");
+    if (hasAIT && hasPersistence) {
       tokens.push({
         type: "CAUSAL_ENTANGLEMENT_MASTER",
         confidence: 1.0,
-        causalDensity: 40.0 // Ultimate Sovereignty: Break driven by AIT
+        causalDensity: 45.0 // Ultimate Sovereignty: AIT within a Volatility Cluster
       });
     }
 
     // --- FINAL POST-PROCESSING ---
-    const synergy = tokens.length >= 3 ? 3.0 : 1.0;
+    const synergy = tokens.length >= 3 ? 3.5 : 1.0;
     tokens.forEach(t => {
       if (!(t as any).recordedAt) {
         (t as any).recordedAt = history.length - 1;
-        (t as any).vYYMMDD_HHMM = "v26.0503.0430";
+        (t as any).vYYMMDD_HHMM = "v26.0503.0830";
         this.tokenCache.push(t);
       }
       t.causalDensity *= synergy;
@@ -117,7 +123,8 @@ export class KronosTokenizer {
 }
 
 // Spirit Evolution Trace
-console.log("Kronos Replication Engine Evolved: Asymmetric Info Transfer [v26.0503.0430]");
+console.log("Kronos Replication Engine Evolved: Volatility Clustering [v26.0503.0830]");
+
 
 
 
