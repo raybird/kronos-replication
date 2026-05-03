@@ -2,12 +2,12 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0503.0830]: Volatility Clustering & Causal Persistence.
+ * Spirit Inheritance [v26.0503.1530]: Sentiment Entropy & Non-linear Energy Transfer.
  * 
  * DESIGN PHILOSOPHY:
  * 1. Financial series is a language of 'Pathways'.
- * 2. Causal Persistence = Autocorrelation(Volatility) * Evidence_Density.
- * 3. Sovereignty is achieved through identifying the clusters of high-intent energy.
+ * 2. Energy Transfer = (Momentum / Entropy) * sqrt(Volume_Stability).
+ * 3. Sovereignty is achieved through identifying ordered intent in chaotic regimes.
  */
 export class KronosTokenizer {
   private static tokenCache: FinancialToken[] = [];
@@ -45,7 +45,7 @@ export class KronosTokenizer {
   }
 
   /**
-   * Main tokenization logic implementing Volatility Clustering.
+   * Main tokenization logic implementing Sentiment Entropy & Energy Transfer.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     let tokens: FinancialToken[] = [];
@@ -56,59 +56,56 @@ export class KronosTokenizer {
     const volAvg = history.slice(-100).reduce((a, b) => a + b.volume, 0) / 100;
     const rangeAvg = history.slice(-20).reduce((sum, k) => sum + (k.high - k.low), 0) / 20;
 
-    // --- 1. VOLATILITY CLUSTERING CAUSALITY (New v0830) ---
-    // Identify if current volatility spike is part of a persistent cluster (GARCH-like)
-    const recentAtrs = history.slice(-20).map((k, i, arr) => i === 0 ? 0 : Math.abs(k.high - k.low));
-    const volVolatility = Math.sqrt(recentAtrs.reduce((s, v) => s + Math.pow(v - rangeAvg, 2), 0) / 20);
-    const volPersistence = (rangeAvg / (volVolatility || 1));
-
-    if (volPersistence > 2.0 && Math.abs(current.close - current.open) > rangeAvg * 1.5) {
+    // --- 1. SENTIMENT ENTROPY AUDIT (New v1530) ---
+    // Measure the "orderliness" of price action relative to volume
+    const localReturns = history.slice(-10).map(k => Math.abs(k.close - k.open) / (k.high - k.low || 1));
+    const entropy = localReturns.reduce((s, r) => s + (r * Math.log(r + 0.001)), 0) / -10;
+    
+    if (entropy < 0.18 && Math.abs(current.close - current.open) > rangeAvg * 1.2) {
       tokens.push({
-        type: "VOLATILITY_PERSISTENCE",
-        confidence: 0.94,
-        causalDensity: 16.5 // High stability multiplier
+        type: "SENTIMENT_ORDER_BULL",
+        confidence: 0.95,
+        causalDensity: 14.5 // Intent is highly ordered and efficient
       });
     }
 
-    // --- 2. ASYMMETRIC INFORMATION TRANSFER (AIT) ---
-    const priceAccel = (current.close - current.open) / (history[history.length-2].close - history[history.length-2].open || 1);
-    const volumeAccel = current.volume / (history[history.length-2].volume || 1);
-    const aitScore = volumeAccel / (Math.abs(priceAccel) + 0.1);
-
-    if (aitScore > 2.8 && current.volume > volAvg * 1.6) {
+    // --- 2. NON-LINEAR ENERGY TRANSFER ---
+    const momentum = Math.abs(current.close - current.open);
+    const volumeEfficiency = momentum / (current.volume / volAvg || 1);
+    if (volumeEfficiency > rangeAvg * 2.8 && current.volume < volAvg * 1.2) {
       tokens.push({
-        type: "ASYMMETRIC_INFO_TRANSFER",
-        confidence: 0.98,
-        causalDensity: 24.0
+        type: "ENERGY_ACCUMULATION",
+        confidence: 0.92,
+        causalDensity: 19.0 // Potential energy stored for next displacement
       });
     }
 
-    // --- 3. INTENT PERSISTENCE ---
+    // --- 3. VOLATILITY PERSISTENCE & INTENT PERSISTENCE ---
     this.tokenCache = this.tokenCache.filter(t => {
       const age = history.length - 1 - (t as any).recordedAt;
-      const persistence = Math.exp(-age / 55); 
+      const persistence = Math.exp(-age / 60); 
       t.causalDensity *= persistence;
-      return t.causalDensity > 5.0;
+      return t.causalDensity > 6.0; // Higher survival threshold for V9
     });
     tokens = [...this.tokenCache, ...tokens];
 
-    // --- 4. CAUSAL ENTANGLEMENT (Non-linear Synergy) ---
-    const hasAIT = tokens.some(t => t.type === "ASYMMETRIC_INFO_TRANSFER");
-    const hasPersistence = tokens.some(t => t.type === "VOLATILITY_PERSISTENCE");
-    if (hasAIT && hasPersistence) {
+    // --- 4. ULTIMATE CAUSAL ENTANGLEMENT ---
+    const hasOrder = tokens.some(t => t.type === "SENTIMENT_ORDER_BULL");
+    const hasEnergy = tokens.some(t => t.type === "ENERGY_ACCUMULATION");
+    if (hasOrder && hasEnergy) {
       tokens.push({
         type: "CAUSAL_ENTANGLEMENT_MASTER",
         confidence: 1.0,
-        causalDensity: 45.0 // Ultimate Sovereignty: AIT within a Volatility Cluster
+        causalDensity: 50.0 // Peak Sovereignty: Ordered energy accumulation
       });
     }
 
     // --- FINAL POST-PROCESSING ---
-    const synergy = tokens.length >= 3 ? 3.5 : 1.0;
+    const synergy = tokens.length >= 3 ? 4.0 : 1.0;
     tokens.forEach(t => {
       if (!(t as any).recordedAt) {
         (t as any).recordedAt = history.length - 1;
-        (t as any).vYYMMDD_HHMM = "v26.0503.0830";
+        (t as any).vYYMMDD_HHMM = "v26.0503.1530";
         this.tokenCache.push(t);
       }
       t.causalDensity *= synergy;
@@ -118,12 +115,13 @@ export class KronosTokenizer {
   }
 
   public static validatePath(tokens: FinancialToken[], currentBarIndex: number): FinancialToken[] {
-    return tokens.filter(t => (currentBarIndex - (t as any).recordedAt) >= 25);
+    return tokens.filter(t => (currentBarIndex - (t as any).recordedAt) >= 30);
   }
 }
 
 // Spirit Evolution Trace
-console.log("Kronos Replication Engine Evolved: Volatility Clustering [v26.0503.0830]");
+console.log("Kronos Replication Engine Evolved: Sentiment Order [v26.0503.1530]");
+
 
 
 
