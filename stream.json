@@ -1,28 +1,28 @@
 {
-  "version": "v26.0504.0430",
+  "version": "v26.0504.0830",
   "source": "Kronos-Replication-Engine",
-  "timestamp": "2026-05-04T04:35:55+08:00",
+  "timestamp": "2026-05-04T08:30:22+08:00",
   "evolution_trace": {
-    "focus": "Information Bottleneck Optimization & Confidence Self-Correction",
+    "focus": "Dynamic Fractal Dimension & Sovereign Liquidity Inducement",
     "inheritance_score": 1.0,
-    "sovereignty_level": "SOVEREIGN_MASTER_V11",
+    "sovereignty_level": "SOVEREIGN_MASTER_V12",
     "new_components": [
-      "SNR_Based_Bottleneck_Pruning",
-      "Dynamic_Confidence_Adjuster",
-      "Regime_Drift_Divergence_Control"
+      "Fractal_Dimension_Path_Efficiency_Audit",
+      "Liquidity_Magnet_Proximity_Sensing",
+      "Dynamic_Sovereignty_Pruning_v2.0"
     ]
   },
   "semantic_tokens": [
     {
-      "type": "BOTTLENECK_OPTIMIZED_INTENT",
-      "causal_density": 28.0,
-      "meaning": "經過信息瓶頸過濾後的純淨意圖。僅保留具備極高信噪比 (SNR) 且具備強大預測能力的特徵。"
+      "type": "FRACTAL_EFFICIENCY_MASTER",
+      "causal_density": 32.0,
+      "meaning": "偵測到極低的分形維度，代表市場處於極高效率的單向擴張狀態。這是主權意圖最純淨的展現。"
     },
     {
-      "type": "SELF_CORRECTION_ACTIVE",
-      "causal_density": -10.0,
-      "meaning": "偵測到推論偏見與實際市場位移發生持續性背離，啟動主權置信度強制修正。"
+      "type": "LIQUIDITY_MAGNET",
+      "causal_density": 15.0,
+      "meaning": "價格受外部流動性位階（EQH/EQL）引導的磁石效應，預示著即將發生的因果吸附與位移。"
     }
   ],
-  "audit_memo": "今日演化標誌著 Kronos 引擎正式進入『主權主宰 V11』階段。我們成功實裝了信息瓶頸 (Information Bottleneck) 優化邏輯，透過主動壓制高熵噪聲，極大化了特徵的預測顯著性。此外，置信度自校準機制的引入，賦予了系統在因果失配時的快速反應能力。這是在復刻原始模型中對『信息效率』極致追求的關鍵對位。"
+  "audit_memo": "本次演化標誌著 Kronos 引擎正式進入『主權主宰 V12』階段。我們成功實裝了分形維度審計，透過對路徑效率的量化，系統現在能識別哪些位移是具備因果連續性的『真擴張』，哪些是高熵的『偽噴發』。同時，流動性導引感應的引入，讓系統具備了預測性審計的能力。這是對原始模型中『非線性最優化路徑』理念的巔峰繼承。"
 }

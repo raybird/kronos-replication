@@ -2,12 +2,12 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0504.0430]: Information Bottleneck & Confidence Self-Correction.
+ * Spirit Inheritance [v26.0504.0830]: Fractal Dimension & Liquidity Inducement.
  * 
  * DESIGN PHILOSOPHY:
  * 1. Financial series is a language of 'Pathways'.
- * 2. Information Bottleneck = min(Entropy) s.t. max(Predictive_Power).
- * 3. Sovereignty is achieved through aggressive pruning of high-entropy noise.
+ * 2. Efficiency = Displacement / Total_Path_Length (Fractal D).
+ * 3. Sovereignty is achieved through identifying low-entropy, low-fractal intent.
  */
 export class KronosTokenizer {
   private static tokenCache: FinancialToken[] = [];
@@ -15,7 +15,7 @@ export class KronosTokenizer {
   private static sPos: number = 0; 
   private static sNeg: number = 0; 
   private static reputationMatrix: Map<string, number> = new Map();
-  private static biasDivergenceCount: number = 0; // Track bias vs actual divergence
+  private static biasDivergenceCount: number = 0;
 
   public static setRecursiveBias(bias: number) {
     this.recursiveBias = bias;
@@ -42,12 +42,12 @@ export class KronosTokenizer {
        this.sPos = 0; this.sNeg = 0; 
        return macroMove > 0 ? MarketRegime.BullishTrending : MarketRegime.BearishTrending;
     }
-    if (Math.abs(macroMove) > atr * 5.8) return macroMove > 0 ? MarketRegime.BullishTrending : MarketRegime.BearishTrending;
+    if (Math.abs(macroMove) > atr * 6.0) return macroMove > 0 ? MarketRegime.BullishTrending : MarketRegime.BearishTrending;
     return MarketRegime.LowVolatilityRange;
   }
 
   /**
-   * Main tokenization logic implementing Bottleneck Pruning.
+   * Main tokenization logic implementing Fractal Efficiency.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     let tokens: FinancialToken[] = [];
@@ -58,45 +58,51 @@ export class KronosTokenizer {
     const volAvg = history.slice(-100).reduce((a, b) => a + b.volume, 0) / 100;
     const rangeAvg = history.slice(-20).reduce((sum, k) => sum + (k.high - k.low), 0) / 20;
 
-    // --- 1. CONFIDENCE SELF-CORRECTION (New v0430) ---
-    const actualMove = Math.sign(current.close - current.open);
-    if (this.recursiveBias !== 0 && actualMove !== Math.sign(this.recursiveBias)) {
-      this.biasDivergenceCount++;
-    } else {
-      this.biasDivergenceCount = 0;
-    }
-    const correctionFactor = this.biasDivergenceCount >= 2 ? 0.6 : 1.0;
+    // --- 1. FRACTAL DIMENSION AUDIT (New v0830) ---
+    // Measure efficiency: (Max-Min) / Sum(Absolute Moves)
+    const window20 = history.slice(-20);
+    const displacement = Math.max(...window20.map(k => k.high)) - Math.min(...window20.map(k => k.low));
+    const pathLength = window20.reduce((s, k, i, arr) => i === 0 ? 0 : s + Math.abs(k.close - arr[i-1].close), 0);
+    const fractalEfficiency = displacement / (pathLength || 1); // Closer to 1 = trend, closer to 0 = noise
 
-    // --- 2. INFORMATION BOTTLENECK PRUNING ---
-    // Prune tokens with low signal-to-noise ratio (SNR)
-    const snr = (Math.abs(current.close - current.open) / (rangeAvg || 1)) * correctionFactor;
-    const isGated = snr < 0.25;
+    // --- 2. LIQUIDITY INDUCEMENT SENSING ---
+    const recentHighs = history.slice(-50).map(k => k.high);
+    const liquidityMagnet = Math.max(...recentHighs);
+    const proximity = (liquidityMagnet - current.close) / rangeAvg;
+    const isInduced = proximity > 0 && proximity < 1.5; // High inducement toward buy-side liquidity
 
-    // --- 3. RECURSIVE REPUTATION & PERSISTENCE ---
+    // --- 3. RECURSIVE REPUTATION & PRUNING ---
     this.tokenCache = this.tokenCache.filter(t => {
       const age = history.length - 1 - (t as any).recordedAt;
-      const rep = this.reputationMatrix.get(t.type) || 1.0;
-      const persistence = Math.exp(-age / (70 * rep)); 
-      t.causalDensity *= (persistence * correctionFactor);
-      return t.causalDensity > 8.0; // Higher Tier for V11
+      const persistence = Math.exp(-age / 75); 
+      t.causalDensity *= (persistence * (fractalEfficiency > 0.4 ? 1.1 : 0.7));
+      return t.causalDensity > 9.0; // V12 Threshold
     });
     tokens = [...this.tokenCache];
 
-    // --- 4. BOTTLENECK OPTIMIZED INTENT ---
-    if (!isGated && Math.abs(current.close - current.open) > rangeAvg * 2.0) {
+    // --- 4. FRACTAL EFFICIENCY MASTER ---
+    if (fractalEfficiency > 0.65 && current.volume > volAvg * 1.2) {
       tokens.push({
-        type: "BOTTLENECK_OPTIMIZED_INTENT",
-        confidence: 0.96 * correctionFactor,
-        causalDensity: 28.0 // Peak Efficiency
+        type: "FRACTAL_EFFICIENCY_MASTER",
+        confidence: 0.98,
+        causalDensity: 32.0 // Ultimate Sovereignty
+      });
+    }
+
+    if (isInduced) {
+      tokens.push({
+        type: "LIQUIDITY_MAGNET_BULL",
+        confidence: 0.85,
+        causalDensity: 15.0
       });
     }
 
     // --- FINAL POST-PROCESSING ---
-    const synergy = tokens.length >= 3 ? 5.0 : 1.0;
+    const synergy = tokens.length >= 3 ? 6.0 : 1.0;
     tokens.forEach(t => {
       if (!(t as any).recordedAt) {
         (t as any).recordedAt = history.length - 1;
-        (t as any).vYYMMDD_HHMM = "v26.0504.0430";
+        (t as any).vYYMMDD_HHMM = "v26.0504.0830";
         this.tokenCache.push(t);
       }
       t.causalDensity *= synergy;
@@ -106,12 +112,13 @@ export class KronosTokenizer {
   }
 
   public static validatePath(tokens: FinancialToken[], currentBarIndex: number): FinancialToken[] {
-    return tokens.filter(t => (currentBarIndex - (t as any).recordedAt) >= 40);
+    return tokens.filter(t => (currentBarIndex - (t as any).recordedAt) >= 45);
   }
 }
 
 // Spirit Evolution Trace
-console.log("Kronos Replication Engine Evolved: Information Bottleneck [v26.0504.0430]");
+console.log("Kronos Replication Engine Evolved: Fractal Efficiency [v26.0504.0830]");
+
 
 
 
