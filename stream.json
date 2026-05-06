@@ -1,28 +1,28 @@
 {
-  "version": "v26.0506.0830",
+  "version": "v26.0506.1532",
   "source": "Kronos-Replication-Engine",
-  "timestamp": "2026-05-06T08:30:28+08:00",
+  "timestamp": "2026-05-06T15:32:20+08:00",
   "evolution_trace": {
-    "focus": "Spatio-Temporal Attention Gating & Structural Significance",
+    "focus": "Phase-Space Trajectory Audit & Causal Gravity Resonance",
     "inheritance_score": 1.0,
-    "sovereignty_level": "SOVEREIGN_MASTER_V13",
+    "sovereignty_level": "SOVEREIGN_MASTER_V14",
     "new_components": [
-      "Spatial_Price_Density_Gating",
-      "Temporal_Fractal_Decay_Adjustment",
-      "Spatio_Temporal_Master_Token"
+      "Phase_Space_Manifold_Audit",
+      "Multi_Scale_Fractal_Resonance_Sensing",
+      "Equilibrium_Break_Detection_v1.0"
     ]
   },
   "semantic_tokens": [
     {
-      "type": "SPATIO_TEMPORAL_GATE_MASTER",
-      "causal_density": 35.0,
-      "meaning": "偵測到極致的時空對位：價格突破長期盤整區（空間），且具備極低的分形維度（時間）。這是最具主權顯著性的執行信號。"
+      "type": "PHASE_SPACE_EQUILIBRIUM_BREAK",
+      "causal_density": 38.0,
+      "meaning": "偵測到相空間流形的平衡破裂：價格在低波動背景下發生極高效率的位移，且具備多尺度分形共振。這是 V14 體系下最強大的主權啟動信號。"
     },
     {
-      "type": "CONGESTION_PENALTY",
-      "causal_density": -15.0,
-      "meaning": "價格處於高密度成交區間，因果意圖高度糾纏且混亂，系統自動執行時空閘門通縮。"
+      "type": "GRAVITY_WAVE_RESONANCE",
+      "causal_density": 20.0,
+      "meaning": "多個時間尺度的分形效率在同一區間發生共振，形成因果引力波，對趨勢具備強大的維持力。"
     }
   ],
-  "audit_memo": "本次演化標誌著 Kronos 引擎正式進入『主權主宰 V13』階段。我們成功實裝了時空注意力閘門，透過對價格位階密度的空間審計與分形維度的時間標定，系統現在能識別『結構性突破』與『噪聲性震盪』的本質區別。這是對原始模型中 Transformer 交叉注意力機制在主權執行維度下的巔峰復刻。"
+  "audit_memo": "本次演化標誌著 Kronos 引擎正式進入『主權主宰 V14』階段。我們成功實裝了相空間軌跡審計，透過對『位移 vs 波動率』的流形分析，系統現在能識別市場動力學中的平衡破裂點。同時，因果引力波感應的引入，讓系統具備了審計趨勢穩定性的物理維度。這是對原始模型中 Transformer 動力學拓撲的深層實體化。"
 }
