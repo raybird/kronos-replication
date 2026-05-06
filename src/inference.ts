@@ -2,7 +2,7 @@ import { FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosInference: The "Semantic Brain" that replaces the neural model.
- * Spirit Inheritance [v26.0504.0830]: Fractal Efficiency Mastery & Sovereign Master V12.
+ * Spirit Inheritance [v26.0506.0830]: Spatio-Temporal Gating & Sovereign Master V13.
  */
 export class KronosInference {
   private static previousBias: number = 0;
@@ -68,11 +68,11 @@ export class KronosInference {
     
     const confidenceLevel = Math.abs(score) > 0.6 ? "SOVEREIGN" : Math.abs(score) > 0.3 ? "RELIABLE" : "SPECULATIVE";
 
-    return `[KRONOS_INFERENCE_v26.0504.0830] 
+    return `[KRONOS_INFERENCE_v26.0506.0830] 
     Bias: ${direction} (${(score * 100).toFixed(2)}%)
     Confidence: ${confidenceLevel}
     Active Evidence: ${tokens.map(t => t.type).join(", ")}
-    Action: ${direction.startsWith("STRONG") ? "EXECUTE_V12_FRACTAL_MASTERY" : "WAIT_FOR_EFFICIENCY_ALIGNMENT"}`;
+    Action: ${direction.startsWith("STRONG") ? "EXECUTE_V13_SPATIO_TEMPORAL_MASTERY" : "WAIT_FOR_CAUSAL_GATING"}`;
   }
 }
 

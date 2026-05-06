@@ -1,28 +1,28 @@
 {
-  "version": "v26.0504.0830",
+  "version": "v26.0506.0830",
   "source": "Kronos-Replication-Engine",
-  "timestamp": "2026-05-04T08:30:22+08:00",
+  "timestamp": "2026-05-06T08:30:28+08:00",
   "evolution_trace": {
-    "focus": "Dynamic Fractal Dimension & Sovereign Liquidity Inducement",
+    "focus": "Spatio-Temporal Attention Gating & Structural Significance",
     "inheritance_score": 1.0,
-    "sovereignty_level": "SOVEREIGN_MASTER_V12",
+    "sovereignty_level": "SOVEREIGN_MASTER_V13",
     "new_components": [
-      "Fractal_Dimension_Path_Efficiency_Audit",
-      "Liquidity_Magnet_Proximity_Sensing",
-      "Dynamic_Sovereignty_Pruning_v2.0"
+      "Spatial_Price_Density_Gating",
+      "Temporal_Fractal_Decay_Adjustment",
+      "Spatio_Temporal_Master_Token"
     ]
   },
   "semantic_tokens": [
     {
-      "type": "FRACTAL_EFFICIENCY_MASTER",
-      "causal_density": 32.0,
-      "meaning": "偵測到極低的分形維度，代表市場處於極高效率的單向擴張狀態。這是主權意圖最純淨的展現。"
+      "type": "SPATIO_TEMPORAL_GATE_MASTER",
+      "causal_density": 35.0,
+      "meaning": "偵測到極致的時空對位：價格突破長期盤整區（空間），且具備極低的分形維度（時間）。這是最具主權顯著性的執行信號。"
     },
     {
-      "type": "LIQUIDITY_MAGNET",
-      "causal_density": 15.0,
-      "meaning": "價格受外部流動性位階（EQH/EQL）引導的磁石效應，預示著即將發生的因果吸附與位移。"
+      "type": "CONGESTION_PENALTY",
+      "causal_density": -15.0,
+      "meaning": "價格處於高密度成交區間，因果意圖高度糾纏且混亂，系統自動執行時空閘門通縮。"
     }
   ],
-  "audit_memo": "本次演化標誌著 Kronos 引擎正式進入『主權主宰 V12』階段。我們成功實裝了分形維度審計，透過對路徑效率的量化，系統現在能識別哪些位移是具備因果連續性的『真擴張』，哪些是高熵的『偽噴發』。同時，流動性導引感應的引入，讓系統具備了預測性審計的能力。這是對原始模型中『非線性最優化路徑』理念的巔峰繼承。"
+  "audit_memo": "本次演化標誌著 Kronos 引擎正式進入『主權主宰 V13』階段。我們成功實裝了時空注意力閘門，透過對價格位階密度的空間審計與分形維度的時間標定，系統現在能識別『結構性突破』與『噪聲性震盪』的本質區別。這是對原始模型中 Transformer 交叉注意力機制在主權執行維度下的巔峰復刻。"
 }
