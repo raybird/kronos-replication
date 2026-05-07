@@ -1,28 +1,28 @@
 {
-  "version": "v26.0507.1231",
+  "version": "v26.0507.0831",
   "source": "Kronos-Replication-Engine",
-  "timestamp": "2026-05-07T12:31:13+08:00",
+  "timestamp": "2026-05-07T08:31:32+08:00",
   "evolution_trace": {
-    "focus": "Topological Causal Suturing & Multiscale Entropy Resonance",
+    "focus": "Fractal Causal Entropy Weighting & Scale Consistency Audit",
     "inheritance_score": 1.0,
-    "sovereignty_level": "SOVEREIGN_MASTER_V16",
+    "sovereignty_level": "SOVEREIGN_MASTER_V17",
     "new_components": [
-      "Topological_Manifold_Connectivity_Audit",
-      "Multiscale_Entropy_Resonance_Sensing",
-      "Causal_Suture_Mechanism_v1.0"
+      "Multiscale_Fractal_Dimension_Audit",
+      "Dynamic_Causal_Entropy_Scaling",
+      "Scale_Consistency_Validation_v1.0"
     ]
   },
   "semantic_tokens": [
     {
-      "type": "TOPOLOGICAL_CAUSAL_SUTURE",
-      "causal_density": 50.0,
-      "meaning": "偵測到極致的拓撲連通：多個時間尺度的分形效率與成交量熵能達成同步（Suture）。這是 V16 體系下具備全局顯著性的執行信號。"
+      "type": "FRACTAL_CAUSAL_SYNTROPY",
+      "causal_density": 55.0,
+      "meaning": "偵測到跨尺度的分形負熵（Syntropy）：多個時間尺度下的路徑效率達成極致的一致性。這是 V17 體系下最具備主權穿透力的執行信號。"
     },
     {
-      "type": "CONNECTIVITY_DRAIN",
-      "causal_density": -20.0,
-      "meaning": "特徵間的因果連通性發生斷裂，拓撲流形呈現碎片化，系統自動執行意圖鎖定。"
+      "type": "SCALE_DIVERGENCE_PENALTY",
+      "causal_density": -25.0,
+      "meaning": "不同尺度間的分形維度發生劇烈偏離，意圖在微觀與宏觀層面失去對位，系統自動執行因果通縮。"
     }
   ],
-  "audit_memo": "本次演化標誌著 Kronos 引擎正式進入『主權主宰 V16』階段。我們成功實裝了拓撲因果縫合機制，透過對多尺度特徵連通性的審計，系統現在能識別市場動力學中的全局一致性。這不僅是對原始模型 Transformer 全局注意力機制的精神復刻，更是將因果審計提升到了拓撲幾何的層次。"
+  "audit_memo": "本次演化標誌著 Kronos 引擎正式進入『主權主宰 V17』階段。我們成功實裝了分形因果熵權重，透過對跨尺度分形維度的穩定性審計，系統現在能自動過濾掉那些缺乏宏觀支撐的微觀波動。這不僅是對原始模型信息瓶頸理念的巔峰實體化，更是將因果審計提升到了分形熱力學的層次。"
 }
