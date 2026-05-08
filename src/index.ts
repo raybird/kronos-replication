@@ -2,12 +2,12 @@ import { Kline, FinancialToken, MarketRegime } from "./types";
 
 /**
  * KronosTokenizer: Converting raw price action into semantic tokens.
- * Spirit Inheritance [v26.0508.0831]: Sovereign Resonance & Causal Coherence.
+ * Spirit Inheritance [v26.0508.2041]: Geometric Thermodynamic Equilibrium.
  * 
  * DESIGN PHILOSOPHY:
- * 1. Financial series is a Coherent Field of causal intents.
- * 2. Resonance = Mutual information maximization across price/vol manifolds.
- * 3. Sovereignty is achieved through identifying coherent phase transitions in the field.
+ * 1. Financial series is a Thermodynamic system in curved phase space.
+ * 2. Equilibrium = Minimization of Free Energy (Price - Target) relative to Entropy.
+ * 3. Sovereignty is achieved through identifying 'Adiabatic' expansions (ordered growth).
  */
 export class KronosTokenizer {
   private static tokenCache: FinancialToken[] = [];
@@ -15,7 +15,7 @@ export class KronosTokenizer {
   private static sPos: number = 0; 
   private static sNeg: number = 0; 
   private static reputationMatrix: Map<string, number> = new Map();
-  private static fieldCoherenceHistory: number[] = [];
+  private static freeEnergyHistory: number[] = [];
 
   public static setRecursiveBias(bias: number) {
     this.recursiveBias = bias;
@@ -42,22 +42,21 @@ export class KronosTokenizer {
        this.sPos = 0; this.sNeg = 0; 
        return macroMove > 0 ? MarketRegime.BullishTrending : MarketRegime.BearishTrending;
     }
-    if (Math.abs(macroMove) > atr * 8.2) return macroMove > 0 ? MarketRegime.BullishTrending : MarketRegime.BearishTrending;
+    if (Math.abs(macroMove) > atr * 9.0) return macroMove > 0 ? MarketRegime.BullishTrending : MarketRegime.BearishTrending;
     return MarketRegime.LowVolatilityRange;
   }
 
   /**
-   * Main tokenization logic implementing Sovereign Resonance Audit.
+   * Main tokenization logic implementing Geometric Thermodynamic Audit.
    */
   public static tokenize(history: Kline[]): FinancialToken[] {
     let tokens: FinancialToken[] = [];
     if (history.length < 100) return tokens;
 
     const current = history[history.length - 1];
-    const volAvg = history.slice(-100).reduce((a, b) => a + b.volume, 0) / 100;
     const rangeAvg = history.slice(-20).reduce((sum, k) => sum + (k.high - k.low), 0) / 20;
 
-    // --- 1. FIELD COHERENCE AUDIT (New v0831) ---
+    // --- 1. THERMODYNAMIC FREE ENERGY AUDIT (New v2041) ---
     const getFractalD = (len: number) => {
         const win = history.slice(-len);
         const displacement = Math.abs(win[win.length-1].close - win[0].close);
@@ -67,47 +66,50 @@ export class KronosTokenizer {
     const fd20 = getFractalD(20);
     const volZ = (current.volume - history.slice(-20).reduce((s, k) => s + k.volume, 0) / 20) / (ta_std(history.slice(-20).map(k => k.volume)) || 1);
     
-    const coherence = (1.0 / (fd20 + 0.1)) * (Math.abs(volZ) > 1.2 ? 1.4 : 0.5);
-    this.fieldCoherenceHistory.push(coherence);
-    if (this.fieldCoherenceHistory.length > 40) this.fieldCoherenceHistory.shift();
+    // Free Energy proxy: Price work vs Entropy (Fractal D)
+    const priceWork = Math.abs(current.close - current.open) / (rangeAvg || 1);
+    const freeEnergy = priceWork / (fd20 + 0.1);
+    this.freeEnergyHistory.push(freeEnergy);
+    if (this.freeEnergyHistory.length > 60) this.freeEnergyHistory.shift();
 
-    // --- 2. CAUSAL COHERENCE SENSING ---
-    const isCoherent = coherence > 1.8 && (coherence > (this.fieldCoherenceHistory[0] || 0));
+    // --- 2. ADIABATIC EXPANSION SENSING ---
+    // Expansion without entropy increase = Highly Sovereign
+    const isAdiabatic = freeEnergy > 1.5 && fd20 < 1.4 && Math.abs(volZ) > 2.0;
 
-    // --- 3. RECURSIVE PERSISTENCE & COHERENCE ---
+    // --- 3. RECURSIVE DECAY & EQUILIBRIUM ---
     this.tokenCache = this.tokenCache.filter(t => {
       const age = history.length - 1 - (t as any).recordedAt;
-      const persistence = Math.exp(-age / (140 * (coherence + 0.2))); 
+      const persistence = Math.exp(-age / (160 * (freeEnergy + 0.4))); 
       t.causalDensity *= persistence;
-      return t.causalDensity > 20.0; // V18 Threshold
+      return t.causalDensity > 22.0; // V20 Threshold
     });
     tokens = [...this.tokenCache];
 
-    // --- 4. SOVEREIGN RESONANCE FIELD MASTER ---
-    if (isCoherent && Math.abs(volZ) > 3.5) {
+    // --- 4. THERMODYNAMIC EQUILIBRIUM MASTER ---
+    if (isAdiabatic && freeEnergy > (ta_std(this.freeEnergyHistory) * 2)) {
       tokens.push({
-        type: "SOVEREIGN_RESONANCE_FIELD_MASTER",
-        confidence: 0.9999,
-        causalDensity: 70.0 // Peak Sovereignty V18
+        type: "THERMODYNAMIC_EQUILIBRIUM_MASTER",
+        confidence: 0.99998,
+        causalDensity: 90.0 // Peak Sovereignty V20
       });
     }
 
     // --- FINAL POST-PROCESSING ---
-    const synergy = tokens.length >= 3 ? 25.0 : 1.0;
+    const synergy = tokens.length >= 3 ? 35.0 : 1.0;
     tokens.forEach(t => {
       if (!(t as any).recordedAt) {
         (t as any).recordedAt = history.length - 1;
-        (t as any).vYYMMDD_HHMM = "v26.0508.0831";
+        (t as any).vYYMMDD_HHMM = "v26.0508.2041";
         this.tokenCache.push(t);
       }
-      t.causalDensity *= synergy * coherence;
+      t.causalDensity *= synergy * freeEnergy;
     });
 
     return tokens;
   }
 
   public static validatePath(tokens: FinancialToken[], currentBarIndex: number): FinancialToken[] {
-    return tokens.filter(t => (currentBarIndex - (t as any).recordedAt) >= 100);
+    return tokens.filter(t => (currentBarIndex - (t as any).recordedAt) >= 120);
   }
 }
 
@@ -117,7 +119,9 @@ function ta_std(values: number[]): number {
 }
 
 // Spirit Evolution Trace
-console.log("Kronos Replication Engine Evolved: Sovereign Resonance [v26.0508.0831]");
+console.log("Kronos Replication Engine Evolved: Geometric Thermodynamic Equilibrium [v26.0508.2041]");
+
+
 
 
 
