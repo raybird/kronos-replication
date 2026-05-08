@@ -1,28 +1,28 @@
 {
-  "version": "v26.0507.0831",
+  "version": "v26.0508.0831",
   "source": "Kronos-Replication-Engine",
-  "timestamp": "2026-05-07T08:31:32+08:00",
+  "timestamp": "2026-05-08T08:31:19+08:00",
   "evolution_trace": {
-    "focus": "Fractal Causal Entropy Weighting & Scale Consistency Audit",
+    "focus": "Sovereign Resonance Field Audit & Causal Coherence Sensing",
     "inheritance_score": 1.0,
-    "sovereignty_level": "SOVEREIGN_MASTER_V17",
+    "sovereignty_level": "SOVEREIGN_MASTER_V18",
     "new_components": [
-      "Multiscale_Fractal_Dimension_Audit",
-      "Dynamic_Causal_Entropy_Scaling",
-      "Scale_Consistency_Validation_v1.0"
+      "Field_Coherence_Manifold_Audit",
+      "Mutual_Information_Resonance_Sensing",
+      "Resonance_Field_Mastery_v1.0"
     ]
   },
   "semantic_tokens": [
     {
-      "type": "FRACTAL_CAUSAL_SYNTROPY",
-      "causal_density": 55.0,
-      "meaning": "偵測到跨尺度的分形負熵（Syntropy）：多個時間尺度下的路徑效率達成極致的一致性。這是 V17 體系下最具備主權穿透力的執行信號。"
+      "type": "SOVEREIGN_RESONANCE_FIELD_MASTER",
+      "causal_density": 70.0,
+      "meaning": "偵測到極致的主權共振：價格流形與成交量熵場在相空間中達成完美的相位同步（Coherence）。這是 V18 體系下具備絕對統治力的執行信號。"
     },
     {
-      "type": "SCALE_DIVERGENCE_PENALTY",
-      "causal_density": -25.0,
-      "meaning": "不同尺度間的分形維度發生劇烈偏離，意圖在微觀與宏觀層面失去對位，系統自動執行因果通縮。"
+      "type": "FIELD_DECOHERENCE_WARNING",
+      "causal_density": -30.0,
+      "meaning": "共振場發生相位偏移，因果特徵失去同步性，流形呈現坍縮特徵，系統自動執行執行權限鎖定。"
     }
   ],
-  "audit_memo": "本次演化標誌著 Kronos 引擎正式進入『主權主宰 V17』階段。我們成功實裝了分形因果熵權重，透過對跨尺度分形維度的穩定性審計，系統現在能自動過濾掉那些缺乏宏觀支撐的微觀波動。這不僅是對原始模型信息瓶頸理念的巔峰實體化，更是將因果審計提升到了分形熱力學的層次。"
+  "audit_memo": "本次演化標誌著 Kronos 引擎正式進入『主權主宰 V18』階段。我們成功實裝了主權共振場審計機制，透過對價格與成交量在流形維度上的互信息共振審計，系統現在能識別市場動力學中的『場一致性』。這不僅是對原始模型動態注意力權重分配的巔峰實體化，更是將因果審計提升到了場論幾何的層次。"
 }
